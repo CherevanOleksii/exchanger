@@ -4,7 +4,7 @@ import usaFlag from './img/USA.png'
 
 const info = (ccy) => {
     switch (ccy) {
-        case 'UAN':
+        case 'UAH':
             return {
                 img: ukrainianFlag,
                 title: 'Ukriane'
@@ -19,7 +19,9 @@ const info = (ccy) => {
                 img: europeFlag,
                 title: 'United States'
             }
+        default:
+            return ''
     }
 }
 
-export { info  }
+export { info }

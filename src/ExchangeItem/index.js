@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
 import './style.scss'
 
-const ExchangeItem = ({ img, title = 'Ukraine', amount = '1', mainCurrency = 'UAN', currency = 'UAN', callbackInput = null }) => {
+const ExchangeItem = ({ img, title = 'Ukraine', amount = '1', inputValue = '', mainCurrency = 'UAN', currency = 'UAN', callbackInput = null }) => {
 
-    const [value, setValue] = useState('')
+    const [value, setValue] = useState(inputValue)
 
     useEffect(() => {
+        setValue(inputValue)
+    }, [inputValue])
 
-    }, [value])
+
+    // const clearString = function(t) {
+    //     return t.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    // }
 
     const handleInput = (event) => {
         const val = event.target.value;
-        const re = /^[0-9\b]+$/;
+        // const re = /^[0-9\b]+$/;
+        // const re =/^[0-9]+(?:[\.]|[\.][0-9]{1,4})?$/
+        const re =/^[0-9]+(?:[\.]|[\.][0-9]+)?$/
 
         if (val === '' || re.test(val)) {
             setValue(val);
