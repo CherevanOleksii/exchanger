@@ -10,13 +10,9 @@ const ExchangeItem = ({ img, title = 'Ukraine', amount = '1', inputValue = '', m
     }, [inputValue])
 
 
-    // const clearString = function(t) {
-    //     return t.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-    // }
-
     const handleInput = (event) => {
         const val = event.target.value;
-        // const re = /^[0-9\b]+$/;
+        // Если нужно задать ограничени 
         // const re =/^[0-9]+(?:[\.]|[\.][0-9]{1,4})?$/
         const re =/^[0-9]+(?:[\.]|[\.][0-9]+)?$/
 
