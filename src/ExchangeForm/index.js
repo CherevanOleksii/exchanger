@@ -34,121 +34,122 @@ const ExchangeForm = () => {
             mainCurrency: '',
             currency: '',
         }
+    } // Нам нужна инициализиция, и для того чтобы использовать меньше магии у нас есть "обьект инициализации"
+
+    useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
+        fetch() // Метод для запроса данных с сервера
+    }, []) // В прослуше пусто, следовательно метод не будет повторно выполнятся
+
+    const [isBuy, setIsBuy] = useState(true) //Хук состояния. Название поля глупое, но вполне сгодится, используем для инициализации состояния "Это покупка?" (покупка или не покупка)
+
+    const handleIsBuy = (isBuyValue) => { // Калбек для получения состояния дочернего компонента
+        setIsBuy(isBuyValue) // Присваеваем состояние дочернего компонента родителю
     }
 
-    useEffect(() => {
-        fetch()
-    }, [])
-
-    const [isBuy, setIsBuy] = useState(true)
-
-    const handleIsBuy = (isBuyValue) => {
-        setIsBuy(isBuyValue)
-    }
-
-    useEffect(() => {
-        dispathExchange({
-            type: 'CHANGE_RATE',
+    useEffect(() => { // Хук для выполнения кода при изминениях в состоянию "Это покупка?"
+        dispathExchange({ // Выполняем запрос
+            type: 'CHANGE_RATE', //Тип запроса
         })
     }, [isBuy])
 
-    const handleLeftInput = (value) => {
-        dispathExchange({
-            type: 'LEFT_CHANGE',
-            payload: {
-                inputValue: value
+    const handleLeftInput = (value) => { // Обработчик изминений в левой карточке
+        dispathExchange({ // Выполняем запрос
+            type: 'LEFT_CHANGE', // Тип запроса, у нас это изминения в левой карточке
+            payload: { // Передаем состояние 
+                inputValue: value // Значение поля ввода левой карточки
             }
         })
     }
 
-    const handleRightInput = (value) => {
-        dispathExchange({
-            type: 'RIGHT_CHANGE',
-            payload: {
-                inputValue: value
+    const handleRightInput = (value) => { // Обработчик изминений в правой карточке
+        dispathExchange({ // Выполняем запрос
+            type: 'RIGHT_CHANGE', // Тип запроса
+            payload: { // Передаем состояние
+                inputValue: value // Значение поля ввода правой карточки
             }
         })
     }
 
-    const handleChangeSelect = (event) => {
-        let name = event.target.value
+    const handleChangeSelect = (event) => { // Обрабатываем изминение 
+        let name = event.target.value // Исполюзую переменную для хранения значения выбраной валюты
 
-        const index = indexContains(exchange.listCCY, name)
+        const index = indexContains(exchange.listCCY, name) // С помощью метода получаем индекс в списке
 
-        dispathExchange({
-            type: "CHANGE_INDEX",
+        dispathExchange({ // Выполняем запрос
+            type: "CHANGE_INDEX", // Тип запроса
 
-            payload: {
-                index: index
+            payload: { // Передаем запроса
+                index: index // Значение индекса
             }
         })
 
     }
 
 
-    const exchangeReducer = (state, action) => {
+    const exchangeReducer = (state, action) => { // Reducer почему? Ибо нам нужно хранить состояние и использовать повидение
 
-        switch (action.type) {
-            case "INIT": {
-                return {
-                    ...state,
-                    isLoading: true
+        switch (action.type) { // Определяем тип запроса
+            case "INIT": { // Запрос "инициализация" для инициализац
+                return { // Обновляем состояне
+                    // ...state, // Возвразаем старое состояние
+                    ...staticExchange, // Инициализируем начальные значения
+                    isLoading: true // Состояне приложения загрузка - нужно для того, чтобы показать окно загрузки 
                 }
             }
 
-            case "FETCH": {
-                let data = action.payload.apiData
-                let dataList = action.payload.apiDataList
-                let { base_ccy, ccy, buy, sale } = data
-                let input = 1
+            case "FETCH": { // Запрос инициалиации 
+                let data = action.payload.apiData // Использую переменные (одна переменная заменяет длинную конструкцию + зрительно понятнее)
+                let dataList = action.payload.apiDataList 
+                let { base_ccy, ccy, buy, sale } = data // С помощью деконструктора создаю переменные (без постоянного использования data.sale и тд)
+                let input = 1 // Немного магии, инициализирую значение для суммы в начале
 
-                return {
-                    ...state,
-                    apiData: data,
+                return { // Задаем состояние обьекта
+                    ...state, // Старое состояние 
+                    apiData: data, 
                     apiDataList: dataList,
                     isLoading: false,
                     isError: false,
-                    listCCY: dataList.map(item => item.ccy),
-                    index: 0,
-                    left: {
-                        img: info(base_ccy).img,
-                        title: info(base_ccy).title,
-                        amount: state.left.amount,
-                        inputValue: input,
-                        mainCurrency: base_ccy,
-                        currency: base_ccy,
+                    listCCY: dataList.map(item => item.ccy), // Задаю список всех валют, использую map для трансформации списка
+                    index: 0, // Индекс валют для перевода
+                    left: { // Левая карточка
+                        img: info(base_ccy).img, // Картинка которую получам из кода валюты
+                        title: info(base_ccy).title, // Заголовок который получаем из кода валюты
+                        amount: state.left.amount, // Цена валюты по отношению к основной 
+                        inputValue: input, // Данные внутри поля ввода
+                        mainCurrency: base_ccy, // Основная валюта
+                        currency: base_ccy, // Тип валюты (сбоку от ввода)
                     },
-                    right: {
-                        img: info(ccy).img,
+                    right: { // Все тоже как и в левой =)
+                        img: info(ccy).img, 
                         title: info(ccy).title,
-                        amount: roundUp(isBuy ? buy : sale),
-                        inputValue: roundUp((input / (isBuy ? buy : sale))),
-                        mainCurrency: base_ccy,
-                        currency: ccy,
+                        amount: roundUp(isBuy ? buy : sale), // Передаем цену покупки или продажи, также округляю число
+                        inputValue: roundUp((input / (isBuy ? buy : sale))), // Передаю значение ввода правой карточки
+                        mainCurrency: base_ccy, // Значение основной валюты
+                        currency: ccy, // Значение валюты
                     }
                 }
             }
 
-            case "CHANGE_RATE": {
-                let { buy, sale } = state.apiData
+            case "CHANGE_RATE": { // Запрос смены типа покупка \ продажа
+                let { buy, sale } = state.apiData // Получаем цены 
 
-                return {
-                    ...state,
-                    right: {
-                        ...state.right,
-                        inputValue: roundUp(state.left.inputValue / (isBuy ? buy : sale)),
-                        amount: roundUp((isBuy ? buy : sale)),
+                return { // Возвращаем новое состояние
+                    ...state, // Старое состояние, чтобы не переписывать все сначала
+                    right: { // Новое состояние
+                        ...state.right, // С помощью деконструктора передаем старое значение правой карточки
+                        inputValue: roundUp(state.left.inputValue / (isBuy ? buy : sale)), // Новый ввод правой карточки
+                        amount: roundUp((isBuy ? buy : sale)), // Новая цена правой карточки
                     }
                 }
             }
 
-            case "CHANGE_INDEX": {
-                let index = action.payload.index
-                let data = state.apiDataList[index]
-                let { base_ccy, ccy, buy, sale } = data
+            case "CHANGE_INDEX": { // Запрос при смене валюьы (индекса)
+                let index = action.payload.index // Новый индекс
+                let data = state.apiDataList[index] // Информация о новой валюте
+                let { base_ccy, ccy, buy, sale } = data // Берем поля новой валюты
 
-                return {
-                    ...state,
+                return { // Передаем новое состояние (была мысля чтобы сделать через метод и деконструктор...)
+                    ...state, // Дальше как в предыдущих пунктах
                     index: index,
                     apiData: data,
                     left: {
@@ -171,7 +172,7 @@ const ExchangeForm = () => {
             }
 
 
-            case "LEFT_CHANGE": {
+            case "LEFT_CHANGE": { // Смена ввода в левой карточке 
                 let input = action.payload.inputValue
                 let { buy, sale } = state.apiData
 
@@ -188,7 +189,7 @@ const ExchangeForm = () => {
                 }
             }
 
-            case "RIGHT_CHANGE": {
+            case "RIGHT_CHANGE": { // Смена ввода в правой карточке
                 let input = action.payload.inputValue
                 let { buy, sale } = state.apiData
 
@@ -205,11 +206,11 @@ const ExchangeForm = () => {
                 }
             }
 
-            case "ERROR": {
+            case "ERROR": { // Запрос при ошибке
                 console.log('error')
                 return {
                     ...state,
-                    isError: true
+                    isError: true // Присваеваем что у нас ошибка (при отсутствии связи с АПИ)
                 }
             }
             default:
@@ -219,45 +220,41 @@ const ExchangeForm = () => {
     }
 
 
-    const [exchange, dispathExchange] = useReducer(
-        exchangeReducer,
-        staticExchange
+    const [exchange, dispathExchange] = useReducer( // Сам хук
+        exchangeReducer, // Метод 
+        {} // Состояние, у нас внутри метода инициализируется
     )
 
 
-    const fetch = async () => {
-        try {
-            dispathExchange({
+    const fetch = async () => { // Получаем данные с сервера
+        try { // Отлавливаем ошибки
+             dispathExchange({ // Запрос инициализации 
                 type: 'INIT'
             })
 
-            axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5')
-                .then(res => dispathExchange({
+             axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5') // Получения данных с сервера, использую AXIOS так как нраится
+                 .then(res => dispathExchange({ // Если есть ответ, то мы вызываем метод полусения нового состояния
                     type: 'FETCH',
                     payload: {
-                        apiData: res.data[exchange.index],
+                        apiData: res.data[0],
                         apiDataList: res.data,
                     }
                 })
-                ).catch(() => {
+                ).catch(() => { // Если сервер недоступен
                     dispathExchange({
                         type: 'ERROR'
                     })
                 })
         } catch (error) {
-            dispathExchange({
+            dispathExchange({ // Если произойдёт что-то страшное 
                 type: 'ERROR'
             })
         }
 
     }
 
-    useEffect(() => {
 
-    }, [exchange])
-
-
-    return (
+    return ( // Возвращаеи наш компонент (=
         <>
             {exchange.isError ?
                 <>
@@ -277,7 +274,7 @@ const ExchangeForm = () => {
 
 
                                 <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-                                    {exchange.listCCY.map(item => <option key={item}>{item}</option>)}
+                                    {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
                                 </select>
 
                                 <div className='exchange-form-container'>
