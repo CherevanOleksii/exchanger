@@ -275,11 +275,10 @@ const ExchangeForm = () => {
 
                                 <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
 
-                                <div>
-                                    <select onChange={handleChangeSelect}>
-                                        {exchange.listCCY.map(item => <option key={item}>{item}</option>)}
-                                    </select>
-                                </div>
+
+                                <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
+                                    {exchange.listCCY.map(item => <option key={item}>{item}</option>)}
+                                </select>
 
                                 <div className='exchange-form-container'>
                                     <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>

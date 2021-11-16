@@ -5,11 +5,14 @@ const ExchagneOperation = ({ callbackIsBuy }) => {
 
     const btnOperationStyle = {
         active: {
+            backgroundColor: '#daeef9',
             color: '#222222',
             fontWeight: "900",
             cursor: 'default'
         },
         disable: {
+            backgroundColor: '#edf7fd',
+            backgound: 'CADETBLUE',
             color: '#1819b3',
             textDecorationLine: 'underline',
         }
