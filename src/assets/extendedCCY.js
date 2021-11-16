@@ -24,4 +24,8 @@ const info = (ccy) => {
     }
 }
 
-export { info }
+const getCCY = (data=[]) => {
+    return data.map(item => item.ccy)
+}
+
+export { info, getCCY }
