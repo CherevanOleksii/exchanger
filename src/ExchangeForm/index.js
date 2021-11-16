@@ -130,31 +130,19 @@ const ExchangeForm = () => {
             }
 
             case "CHANGE_RATE": {
-                let { base_ccy, ccy, buy, sale } = state.apiData
+                let { buy, sale } = state.apiData
 
                 return {
                     ...state,
-                    left: {
-                        img: info(base_ccy).img,
-                        title: info(base_ccy).title,
-                        amount: state.left.amount,
-                        inputValue: state.right.inputValue * roundUp((isBuy ? buy : sale)),
-                        mainCurrency: base_ccy,
-                        currency: base_ccy,
-                    },
                     right: {
-                        img: info(ccy).img,
-                        title: info(ccy).title,
+                        ...state.right,
+                        inputValue: roundUp(state.left.inputValue / (isBuy ? buy : sale)),
                         amount: roundUp((isBuy ? buy : sale)),
-                        inputValue: state.right.inputValue,
-                        mainCurrency: base_ccy,
-                        currency: ccy,
                     }
                 }
             }
 
             case "CHANGE_INDEX": {
-                console.log(action)
                 let index = action.payload.index
                 let data = state.apiDataList[index]
                 let { base_ccy, ccy, buy, sale } = data
@@ -167,7 +155,7 @@ const ExchangeForm = () => {
                         img: info(base_ccy).img,
                         title: info(base_ccy).title,
                         amount: state.left.amount,
-                        inputValue: state.right.inputValue * roundUp((isBuy ? buy : sale)),
+                        inputValue: roundUp(state.right.inputValue * (isBuy ? buy : sale)),
                         mainCurrency: base_ccy,
                         currency: base_ccy,
                     },
@@ -185,51 +173,34 @@ const ExchangeForm = () => {
 
             case "LEFT_CHANGE": {
                 let input = action.payload.inputValue
-                let { base_ccy, ccy, buy, sale } = state.apiData
+                let { buy, sale } = state.apiData
 
                 return {
                     ...state,
                     left: {
-                        img: info(base_ccy).img,
-                        title: info(base_ccy).title,
-                        amount: state.left.amount,
+                        ...state.left,
                         inputValue: input,
-                        mainCurrency: base_ccy,
-                        currency: base_ccy,
                     },
                     right: {
-                        img: info(ccy).img,
-                        title: info(ccy).title,
-                        amount: roundUp((isBuy ? buy : sale)),
+                        ...state.right,
                         inputValue: roundUp((input / (isBuy ? buy : sale))),
-                        mainCurrency: base_ccy,
-                        currency: ccy,
                     }
                 }
             }
 
             case "RIGHT_CHANGE": {
                 let input = action.payload.inputValue
-                let { base_ccy, ccy, buy, sale } = state.apiData
+                let { buy, sale } = state.apiData
 
                 return {
                     ...state,
                     left: {
-                        img: info(base_ccy).img,
-                        title: info(base_ccy).title,
-                        amount: state.left.amount,
+                        ...state.left,
                         inputValue: roundUp(input * (isBuy ? buy : sale)),
-                        mainCurrency: base_ccy,
-                        currency: base_ccy,
                     },
                     right: {
-                        ...state.right
-                        // img: info(ccy).img,
-                        // title: info(ccy).title,
-                        // amount: roundUp((isBuy ? buy : sale)),
-                        // inputValue: input,
-                        // mainCurrency: base_ccy,
-                        // currency: ccy,
+                        ...state.right,
+                        inputValue: input,
                     }
                 }
             }
@@ -266,8 +237,9 @@ const ExchangeForm = () => {
                     payload: {
                         apiData: res.data[exchange.index],
                         apiDataList: res.data,
-                    }})
-                ).catch (()=> {
+                    }
+                })
+                ).catch(() => {
                     dispathExchange({
                         type: 'ERROR'
                     })
@@ -281,37 +253,46 @@ const ExchangeForm = () => {
     }
 
     useEffect(() => {
-        console.log(exchange)
+
     }, [exchange])
 
 
     return (
         <>
-            {
-                !exchange.isLoading ?
-                    <div className='exchange-form'>
-                        <div className='exchange-form-header'>
-                            Currency converter
-                        </div>
+            {exchange.isError ?
+                <>
+                    <h1>Something wrong...</h1>
+                    <h2>Pleace check your internet connection =)</h2>
+                </>
+                :
+                <>
+                    {
+                        !exchange.isLoading ?
+                            <div className='exchange-form'>
+                                <div className='exchange-form-header'>
+                                    Currency converter
+                                </div>
 
-                        <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
+                                <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
 
-                        <div>
-                            <select onChange={handleChangeSelect}>
-                                {exchange.listCCY.map(item => <option key={item}>{item}</option>)}
-                            </select>
-                        </div>
+                                <div>
+                                    <select onChange={handleChangeSelect}>
+                                        {exchange.listCCY.map(item => <option key={item}>{item}</option>)}
+                                    </select>
+                                </div>
 
-                        <div className='exchange-form-container'>
-                            <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
-                            <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
-                        </div>
+                                <div className='exchange-form-container'>
+                                    <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
+                                    <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
+                                </div>
 
-                    </div>
-                    :
-                    <h2>
-                        Is loading...
-                    </h2>
+                            </div>
+                            :
+                            <h2>
+                                Is loading...
+                            </h2>
+                    }
+                </>
             }
         </>
     )
