@@ -1,0 +1,35 @@
+.exchange-form {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 2em;
+
+    padding: 2em;
+
+    &-header {
+        font-size: 2em;
+    }
+
+    &-operation {
+        display: flex;
+        gap: 2em;
+
+        button {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-width: 0;
+
+            cursor: pointer;
+        }
+    }
+
+    &-container {
+        display: flex;
+        gap: 50px;
+    }
+}
+

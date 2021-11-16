@@ -1,0 +1,13 @@
+.exchange-operation {
+    display: flex;
+    gap: 2em;
+
+    button {
+        background-color: #f0f0f0;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border-width: 0;
+
+        cursor: pointer;
+    }
+}
