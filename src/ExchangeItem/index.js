@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './style.scss'
 
-const ExchangeItem = ({ img, title = 'Ukraine', amount = '1', inputValue = '', mainCurrency = 'UAN', currency = 'UAN', callbackInput = null }) => {
+const ExchangeItem = ({ img, title = '', amount = '', inputValue = '', mainCurrency = '', currency = '', callbackInput = null }) => {
 
     const [value, setValue] = useState(inputValue)
 
