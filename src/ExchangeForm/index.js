@@ -1,16 +1,16 @@
-import './style.scss'
+import './style.scss' //  Загружаем наши стили
 
-import { info, getCCY } from '../assets/extendedCCY'
-import { roundUp, indexContains } from '../assets/util'
+import { info, getCCY } from '../assets/extendedCCY' // Методы доп информации (локальные)
+import { roundUp, indexContains } from '../assets/util' // Вспомогательные методы (чтобы перенести часть операций в другой файл)
 
-import ExchangeItem from "../ExchangeItem"
-import ExchagneOperation from '../ExchangeOperation'
+import ExchangeItem from "../ExchangeItem" // Компонент карточки
+import ExchagneOperation from '../ExchangeOperation' // Компонент выбора оберации
 
-import { useEffect, useReducer, useState } from 'react'
-import axios from 'axios'
+import { useEffect, useReducer, useState } from 'react' // Реакт хуки
+import axios from 'axios' // Библиотека для работы с сервером
 
-const ExchangeForm = () => {
-    const staticExchange = {
+const ExchangeForm = () => { // Создаем наш компонент, использую стрелочный синтаксис ибо так удобнее и понятнее
+    const staticExchange = { // Заглушка для нашей формы
         index: 0,
         apiData: {},
         apiDataList: [],
@@ -21,7 +21,7 @@ const ExchangeForm = () => {
         left: {
             img: info('').img,
             title: info('').title,
-            amount: '1',
+            amount: '',
             inputValue: '',
             mainCurrency: '',
             currency: '',
@@ -34,7 +34,7 @@ const ExchangeForm = () => {
             mainCurrency: '',
             currency: '',
         }
-    } // Нам нужна инициализиция
+    } 
 
     useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
         fetch() // Метод для запроса данных с сервера
@@ -150,7 +150,7 @@ const ExchangeForm = () => {
 
                 return { // Передаем новое состояние (была мысля чтобы сделать через метод и деконструктор...)
                     ...state, // Дальше как в предыдущих пунктах
-                    index: index,
+                    index: index, 
                     apiData: data,
                     left: {
                         img: info(base_ccy).img,
