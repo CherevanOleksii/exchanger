@@ -12,7 +12,7 @@ import { useEffect, useReducer, useState } from 'react' // Реакт хуки
 
 
 import 'bootstrap/dist/css/bootstrap.css'; // Bootstrap css
-import { Button, Spinner } from 'react-bootstrap' // Bootstrap
+import { Spinner } from 'react-bootstrap' // Bootstrap
 
 import axios from 'axios' // Библиотека для работы с сервером
 
@@ -103,7 +103,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     isLoading: true // Состояне приложения загрузка - нужно для того, чтобы показать окно загрузки 
                 }
             }
-
             case "FETCH": { // Запрос инициалиации 
                 let data = action.payload.apiData // Использую переменные (одна переменная заменяет длинную конструкцию + зрительно понятнее)
                 let dataList = action.payload.apiDataList
@@ -136,7 +135,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     }
                 }
             }
-
             case "CHANGE_RATE": { // Запрос смены типа покупка \ продажа
                 let { buy, sale } = state.apiData // Получаем цены 
 
@@ -149,7 +147,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     }
                 }
             }
-
             case "CHANGE_INDEX": { // Запрос при смене валюьы (индекса)
                 let index = action.payload.index // Новый индекс
                 let data = state.apiDataList[index] // Информация о новой валюте
@@ -177,12 +174,9 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     }
                 }
             }
-
-
             case "LEFT_CHANGE": { // Смена ввода в левой карточке 
                 let input = action.payload.inputValue
                 let { buy, sale } = state.apiData
-
                 return {
                     ...state,
                     left: {
@@ -195,7 +189,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     }
                 }
             }
-
             case "RIGHT_CHANGE": { // Смена ввода в правой карточке
                 let input = action.payload.inputValue
                 let { buy, sale } = state.apiData
@@ -212,7 +205,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                     }
                 }
             }
-
             case "ERROR": { // Запрос при ошибке
                 console.log('error')
                 return {
@@ -221,7 +213,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                 }
             }
             default:
-
                 return state
         }
     }
