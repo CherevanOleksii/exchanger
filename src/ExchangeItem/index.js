@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import './style.scss'
+import './style.css'
 
 const ExchangeItem = ({ img, title = '', amount = '', inputValue = '', mainCurrency = '', currency = '', callbackInput = null }) => { // Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
 
     const [localInputValue, setLocalInputValue] = useState(inputValue) // Хук состояние, храним значение ввода
 
-    // useEffect(() => { 
-    //     setLocalInputValue(inputValue)
-    // }, [inputValue])
+    useEffect(() => { // Если родитель меняет состояние, то мы обнавляем состояние компонента на состояние родителя
+        setLocalInputValue(inputValue)
+    }, [inputValue])
 
 
     const handleInput = (event) => {
         const val = event.target.value;
+        
         // Если нужно задать ограничение на количество цивр после запятой 
         // const re =/^[0-9]+(?:[\.]|[\.][0-9]{1,4})?$/
         const re =/^[0-9]+(?:[\.]|[\.][0-9]+)?$/ // Регулярное выражение для поиска числа, наш string должен быть СТРОГО ЧИСЛОМ!

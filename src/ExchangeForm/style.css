@@ -1,0 +1,32 @@
+.exchange-form {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 2em;
+
+    padding: 2em;
+}
+.exchange-form-header {
+    font-size: 2em;
+}
+
+.exchange-form-type-ccy {
+    padding: 10px 25px;
+}
+
+.exchange-form-container {
+    display: flex;
+    gap: 50px;
+}
+
+.exchange-form-loading {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

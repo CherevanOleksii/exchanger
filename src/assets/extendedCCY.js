@@ -4,39 +4,62 @@ import usaFlag from './img/USA.png'
 import russianFlag from './img/russian.png'
 import bitcoinFlag from './img/bitcoin.jpeg'
 
+const extendedCCY = {
+    UAH: {
+        img: ukrainianFlag,
+        title: 'Ukriane'
+    },
+
+    USD: {
+        img: usaFlag,
+        title: 'United States'
+    },
+
+    RUR: {
+        img: russianFlag,
+        title: 'Russian Federation'
+    },
+
+    EUR: {
+        img: europeFlag,
+        title: 'Europe Nation'
+    },
+
+    BTC: {
+        img: bitcoinFlag,
+        title: 'Bitcoin'
+    },
+
+}
+
 const info = (ccy) => {
     switch (ccy) {
         case 'UAH':
             return {
-                img: ukrainianFlag,
-                title: 'Ukriane'
+                ...extendedCCY.UAH
             }
         case 'USD':
             return {
-                img: usaFlag,
-                title: 'United States'
+                ...extendedCCY.USD
             }
         case 'EUR':
             return {
-                img: europeFlag,
-                title: 'United States'
+                ...extendedCCY.EUR
             }
-        case 'RUR': 
+        case 'RUR':
             return {
-                img:russianFlag,
-                title: 'Russian Federation'
+                ...extendedCCY.RUR
             }
-        case 'BTC': 
+        case 'BTC':
             return {
-                img: bitcoinFlag,
-                title: 'Bitcoin'
+                ...extendedCCY.BTC
             }
         default:
             return ''
     }
 }
 
-const getCCY = (data=[]) => {
+const getCCY = (data = []) => {
     return data.map(item => item.ccy)
 }
 

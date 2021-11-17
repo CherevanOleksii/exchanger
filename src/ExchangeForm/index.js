@@ -1,4 +1,6 @@
-import './style.scss' //  Загружаем наши стили
+import './style.css' //  Загружаем наши стили
+
+import React from 'react'
 
 import { info, getCCY } from '../assets/extendedCCY' // Методы доп информации (локальные)
 import { roundUp, indexContains } from '../assets/util' // Вспомогательные методы (чтобы перенести часть операций в другой файл)
@@ -7,6 +9,11 @@ import ExchangeItem from "../ExchangeItem" // Компонент карточк�
 import ExchagneOperation from '../ExchangeOperation' // Компонент выбора оберации
 
 import { useEffect, useReducer, useState } from 'react' // Реакт хуки
+
+
+import 'bootstrap/dist/css/bootstrap.css'; // Bootstrap css
+import { Button, Spinner } from 'react-bootstrap' // Bootstrap
+
 import axios from 'axios' // Библиотека для работы с сервером
 
 const ExchangeForm = () => { // Создаем наш компонент, использую стрелочный синтаксис ибо так удобнее и понятнее
@@ -34,7 +41,7 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
             mainCurrency: '',
             currency: '',
         }
-    } 
+    }
 
     useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
         fetch() // Метод для запроса данных с сервера
@@ -99,13 +106,13 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
 
             case "FETCH": { // Запрос инициалиации 
                 let data = action.payload.apiData // Использую переменные (одна переменная заменяет длинную конструкцию + зрительно понятнее)
-                let dataList = action.payload.apiDataList 
+                let dataList = action.payload.apiDataList
                 let { base_ccy, ccy, buy, sale } = data // С помощью деконструктора создаю переменные (без постоянного использования data.sale и тд)
                 let input = 1 // Немного магии, инициализирую значение для суммы в начале
 
                 return { // Задаем состояние обьекта
                     ...state, // Старое состояние 
-                    apiData: data, 
+                    apiData: data,
                     apiDataList: dataList,
                     isLoading: false,
                     isError: false,
@@ -120,7 +127,7 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                         currency: base_ccy, // Тип валюты (сбоку от ввода)
                     },
                     right: { // Все тоже как и в левой =)
-                        img: info(ccy).img, 
+                        img: info(ccy).img,
                         title: info(ccy).title,
                         amount: roundUp(isBuy ? buy : sale), // Передаем цену покупки или продажи, также округляю число
                         inputValue: roundUp((input / (isBuy ? buy : sale))), // Передаю значение ввода правой карточки
@@ -150,13 +157,13 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
 
                 return { // Передаем новое состояние (была мысля чтобы сделать через метод и деконструктор...)
                     ...state, // Дальше как в предыдущих пунктах
-                    index: index, 
+                    index: index,
                     apiData: data,
                     left: {
                         img: info(base_ccy).img,
                         title: info(base_ccy).title,
                         amount: state.left.amount,
-                        inputValue: roundUp(state.right.inputValue * (isBuy ? buy : sale)),
+                        inputValue: state.left.inputValue,
                         mainCurrency: base_ccy,
                         currency: base_ccy,
                     },
@@ -164,7 +171,7 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                         img: info(ccy).img,
                         title: info(ccy).title,
                         amount: roundUp((isBuy ? buy : sale)),
-                        inputValue: state.right.inputValue,
+                        inputValue: roundUp((state.left.inputValue / (isBuy ? buy : sale))),
                         mainCurrency: base_ccy,
                         currency: ccy,
                     }
@@ -228,12 +235,11 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
 
     const fetch = async () => { // Получаем данные с сервера
         try { // Отлавливаем ошибки
-             dispathExchange({ // Запрос инициализации 
+            dispathExchange({ // Запрос инициализации 
                 type: 'INIT'
             })
-
-             axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5') // Получения данных с сервера, использую AXIOS так как нраится
-                 .then(res => dispathExchange({ // Если есть ответ, то мы вызываем метод полусения нового состояния
+            axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5') // Получения данных с сервера, использую AXIOS так как нраится
+                .then(res => dispathExchange({ // Если есть ответ, то мы вызываем метод полусения нового состояния
                     type: 'FETCH',
                     payload: {
                         apiData: res.data[0],
@@ -250,7 +256,6 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
                 type: 'ERROR'
             })
         }
-
     }
 
 
@@ -284,9 +289,9 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
 
                             </div>
                             :
-                            <h2>
-                                Is loading...
-                            </h2>
+                            <div className="exchange-form-loading">
+                                <Spinner animation="border" variant="primary" />
+                            </div>
                     }
                 </>
             }

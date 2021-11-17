@@ -1,8 +1,16 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from './App'
+import renderer from 'react-test-renderer'
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('>>> App shallow render components', () => {
+  let wrapper;
+  const output = 1;
+
+  beforeEach(()=>{
+    wrapper = renderer(<App/>);
+  });
+
+  it('+++ render App component', ()=> {
+    expect(wrapper.length).toEqual(1);
+  });
 });
+
