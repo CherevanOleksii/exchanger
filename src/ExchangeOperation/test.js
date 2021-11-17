@@ -9,8 +9,8 @@ describe('Exchange Operation', () => {
     };
 
     it('renders all properties', () => {
-        const component = renderer.create (<ExchagneOperation></ExchagneOperation>)
+        const component = renderer.create (<ExchagneOperation callbackIsBuy={}></ExchagneOperation>)
 
-        
+
     })
 })

@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from 'react'
-import './style.scss'
+import './style.css'
 
 const ExchagneOperation = ({ callbackIsBuy }) => { // Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
 

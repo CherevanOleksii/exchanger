@@ -1,16 +1,30 @@
+import ReactDOM from 'react-dom'
+
+import { shallow, configure } from 'enzyme'
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
+
 import App from './App'
-import renderer from 'react-test-renderer'
+import  ExchangeForm from './ExchangeForm'
 
-describe('>>> App shallow render components', () => {
-  let wrapper;
-  const output = 1;
+configure ({
+  adapter: new Adapter()
+})
 
-  beforeEach(()=>{
-    wrapper = renderer(<App/>);
-  });
+describe('>>>HOME --- Shallow render react components', () => {
+ 
+  it('+++ render App component', () => {
+    const app = shallow(<App></App>);
+    
+    const expectedOutput = '<h1>my</h1>' + 
+    <ExchangeForm></ExchangeForm>
 
-  it('+++ render App component', ()=> {
-    expect(wrapper.length).toEqual(1);
-  });
-});
+    app.setState({value: '[hello]my'})
 
+    const realOutput = app.find('div.App').html()
+
+    expect(realOutput.indexOf(expectedOutput) > -1).toEqual(true)
+
+  })
+
+
+})

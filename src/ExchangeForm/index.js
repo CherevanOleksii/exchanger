@@ -258,44 +258,37 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
         }
     }
 
+    if (exchange.isError) {
+        return (
+            <>
+                <h1>Something wrong...</h1>
+                <h2>Pleace check your internet connection =)</h2>
+            </>
+        )
+    }
+
+    if (exchange.isLoading) {
+        return (
+            <div className="exchange-form-loading">
+                <Spinner animation="border" variant="primary" />
+            </div>
+        )
+    }
 
     return ( // Возвращаеи наш компонент (=
-        <>
-            {exchange.isError ?
-                <>
-                    <h1>Something wrong...</h1>
-                    <h2>Pleace check your internet connection =)</h2>
-                </>
-                :
-                <>
-                    {
-                        !exchange.isLoading ?
-                            <div className='exchange-form'>
-                                <div className='exchange-form-header'>
-                                    Currency converter
-                                </div>
-
-                                <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
-
-
-                                <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-                                    {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
-                                </select>
-
-                                <div className='exchange-form-container'>
-                                    <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
-                                    <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
-                                </div>
-
-                            </div>
-                            :
-                            <div className="exchange-form-loading">
-                                <Spinner animation="border" variant="primary" />
-                            </div>
-                    }
-                </>
-            }
-        </>
+        <div className='exchange-form'>
+            <div className='exchange-form-header'>
+                Currency converter
+            </div>
+            <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
+            <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
+                {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
+            </select>
+            <div className='exchange-form-container'>
+                <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
+                <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
+            </div>
+        </div>
     )
 }
 
