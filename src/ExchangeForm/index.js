@@ -27,7 +27,7 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
     left: {
         img: null,
         title: '',
-        amount: '',
+        amount: '1',
         inputValue: '',
         mainCurrency: '',
         currency: '',
@@ -40,7 +40,7 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
         mainCurrency: '',
         currency: '',
     }
-}}) => { 
+} }) => {
 
     useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
         fetch() // Метод для запроса данных с сервера
@@ -52,15 +52,15 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
         setIsBuy(isBuyValue) // Присваеваем состояние дочернего компонента родителю
     }
 
-    useEffect(() => { // Хук для выполнения кода при изминениях в состоянию "Это покупка?"
+    useEffect(() => { // Хук для выполнения кода при изменениях в состоянию "Это покупка?"
         dispathExchange({ // Выполняем запрос
             type: 'CHANGE_RATE', //Тип запроса
         })
     }, [isBuy])
 
-    const handleLeftInput = (value) => { // Обработчик изминений в левой карточке
+    const handleLeftInput = (value) => { // Обработчик изменений в левой карточке
         dispathExchange({ // Выполняем запрос
-            type: 'LEFT_CHANGE', // Тип запроса, у нас это изминения в левой карточке
+            type: 'LEFT_CHANGE', // Тип запроса, у нас это изменения в левой карточке
             payload: { // Передаем состояние 
                 inputValue: value // Значение поля ввода левой карточки
             }
@@ -76,7 +76,7 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
         })
     }
 
-    const handleChangeSelect = (event) => { // Обрабатываем изминение 
+    const handleChangeSelect = (event) => { // Обрабатываем изменение 
         let name = event.target.value // Исполюзую переменную для хранения значения выбраной валюты
 
         const index = indexContains(exchange.listCCY, name) // С помощью метода получаем индекс в списке
@@ -224,62 +224,56 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
 
 
     const fetch = async () => { // Получаем данные с сервера
-        try { // Отлавливаем ошибки
-            dispathExchange({ // Запрос инициализации 
-                type: 'INIT'
+        dispathExchange({ // Запрос инициализации 
+            type: 'INIT'
+        })
+        axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5') // Получения данных с сервера, использую AXIOS так как нраится
+            .then(res => dispathExchange({ // Если есть ответ, то мы вызываем метод полусения нового состояния
+                type: 'FETCH',
+                payload: {
+                    apiData: res.data[0],
+                    apiDataList: res.data,
+                }
             })
-            axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5') // Получения данных с сервера, использую AXIOS так как нраится
-                .then(res => dispathExchange({ // Если есть ответ, то мы вызываем метод полусения нового состояния
-                    type: 'FETCH',
-                    payload: {
-                        apiData: res.data[0],
-                        apiDataList: res.data,
-                    }
+            ).catch(() => { // Если сервер недоступен
+                dispathExchange({
+                    type: 'ERROR'
                 })
-                ).catch(() => { // Если сервер недоступен
-                    dispathExchange({
-                        type: 'ERROR'
-                    })
-                })
-        } catch (error) {
-            dispathExchange({ // Если произойдёт что-то страшное 
-                type: 'ERROR'
             })
-        }
-    }
+}
 
-    if (exchange.isError) {
-        return (
-            <>
-                <h1>Something wrong...</h1>
-                <h2>Pleace check your internet connection =)</h2>
-            </>
-        )
-    }
+if (exchange.isError) {
+    return (
+        <>
+            <h1>Something wrong...</h1>
+            <h2>Pleace check your internet connection =)</h2>
+        </>
+    )
+}
 
-    if (exchange.isLoading) {
-        return (
-            <div className="exchange-form-loading">
-                <Spinner animation="border" variant="primary" />
-            </div>
-        )
-    }
-
-    return ( // Возвращаеи наш компонент (=
-        <div className='exchange-form'>
-            <div className='exchange-form-header'>
-                Currency converter
-            </div>
-            <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
-            <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-                {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
-            </select>
-            <div className='exchange-form-container'>
-                <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
-                <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
-            </div>
+if (exchange.isLoading) {
+    return (
+        <div className="exchange-form-loading">
+            <Spinner animation="border" variant="primary" />
         </div>
     )
+}
+
+return ( // Возвращаеи наш компонент (=
+    <div className='exchange-form'>
+        <div className='exchange-form-header'>
+            Currency converter
+        </div>
+        <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
+        <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
+            {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
+        </select>
+        <div className='exchange-form-container'>
+            <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
+            <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
+        </div>
+    </div>
+)
 }
 
 export default ExchangeForm
