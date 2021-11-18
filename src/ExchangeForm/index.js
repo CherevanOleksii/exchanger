@@ -16,32 +16,57 @@ import { Spinner } from 'react-bootstrap' // Bootstrap
 
 import axios from 'axios' // Библиотека для работы с сервером
 
-const ExchangeForm = () => { // Создаем наш компонент, использую стрелочный синтаксис ибо так удобнее и понятнее
-    const staticExchange = { // Заглушка для нашей формы
-        index: 0,
-        apiData: {},
-        apiDataList: [],
-        listCCY: [],
-        inputValue: 0,
-        isLoading: false,
-        isError: false,
-        left: {
-            img: info('').img,
-            title: info('').title,
-            amount: '',
-            inputValue: '',
-            mainCurrency: '',
-            currency: '',
-        },
-        right: {
-            img: info('').img,
-            title: info('').title,
-            amount: '',
-            inputValue: '',
-            mainCurrency: '',
-            currency: '',
-        }
+const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей формы
+    index: 0,
+    apiData: {},
+    apiDataList: [],
+    listCCY: [],
+    inputValue: 0,
+    isLoading: false,
+    isError: false,
+    left: {
+        img: null,
+        title: '',
+        amount: '',
+        inputValue: '',
+        mainCurrency: '',
+        currency: '',
+    },
+    right: {
+        img: null,
+        title: '',
+        amount: '',
+        inputValue: '',
+        mainCurrency: '',
+        currency: '',
     }
+}}) => { 
+
+    // const staticExchange = { // Заглушка для нашей формы
+    //         index= 0,
+    //         apiData= {},
+    //         apiDataList= [],
+    //         listCCY= [],
+    //         inputValue= 0,
+    //         isLoading= false,
+    //         isError= false,
+    //         left= {
+    //             img= info('').img,
+    //             title= info('').title,
+    //             amount= '',
+    //             inputValue= '',
+    //             mainCurrency= '',
+    //             currency= '',
+    //         },
+    //         right= {
+    //             img= info('').img,
+    //             title= info('').title,
+    //             amount= '',
+    //             inputValue= '',
+    //             mainCurrency= '',
+    //             currency= '',
+    //         }
+    //     }
 
     useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
         fetch() // Метод для запроса данных с сервера
@@ -99,7 +124,7 @@ const ExchangeForm = () => { // Создаем наш компонент, исп
             case "INIT": { // Запрос "инициализация" для инициализац
                 return { // Обновляем состояне
                     // ...state, // Возвразаем старое состояние
-                    ...staticExchange, // Инициализируем начальные значения
+                    ...exchangeForm, // Инициализируем начальные значения
                     isLoading: true // Состояне приложения загрузка - нужно для того, чтобы показать окно загрузки 
                 }
             }
