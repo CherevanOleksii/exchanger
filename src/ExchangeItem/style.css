@@ -3,11 +3,14 @@
     flex-direction: row;
     align-items: flex-start;
 
+    min-width: 280px;
     gap: 0.5em;
 }
 .exchange-item-left {
     display: flex;
     flex-direction: column;
+
+    width: 100%;
 
     gap: 0.5em;
 }
@@ -15,15 +18,17 @@
 .exchange-item-top-container {
     width: 100%;
 
+    padding-right: 1.5em;
+
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
 }
 .image {
     object-fit: cover;
     height: 60px;
-    max-height: auto;
-    max-width: 90px;
+    width: 90px;
 
     border-radius: 4px;
     background-color: rebeccapurple;
@@ -34,9 +39,9 @@
     justify-self: center;
     align-self: center;
 
-    padding-left: 0.5em;
+    padding-left: 0.2em;
 
-    font: 2em sans-serif;
+    font: 1.5em sans-serif;
 }
 
 .exchange-item-description {

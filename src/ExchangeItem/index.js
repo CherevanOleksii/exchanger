@@ -4,7 +4,7 @@ import './style.css'
 const ExchangeItem = ({ 
     img, 
     title = '', 
-    amount = '', 
+    amount = '1', 
     inputValue = '', 
     mainCurrency = '', 
     currency = '', 
@@ -20,7 +20,6 @@ const ExchangeItem = ({
 
     const handleInput = (event) => {
         const val = event.target.value;
-        
         // Если нужно задать ограничение на количество цивр после запятой 
         // const re =/^[0-9]+(?:[\.]|[\.][0-9]{1,4})?$/
         const re =/^[0-9]+(?:[\.]|[\.][0-9]+)?$/ // Регулярное выражение для поиска числа, наш string должен быть СТРОГО ЧИСЛОМ!
@@ -41,11 +40,12 @@ const ExchangeItem = ({
                 <div className='exchange-item-description'>Rate: {amount} {mainCurrency}</div>
                 <div className='exchange-item-bot-container'>
                     <input className='exchange-item-input' value={localInputValue} onChange={handleInput}></input>
-                </div>
-            </div>
-            <div className="exchange-item-selected-currency">
+                    <div className="exchange-item-selected-currency">
                 {currency}
             </div>
+                </div>
+            </div>
+            
         </div>
     )
 }

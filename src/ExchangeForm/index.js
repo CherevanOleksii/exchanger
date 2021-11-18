@@ -42,32 +42,6 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
     }
 }}) => { 
 
-    // const staticExchange = { // Заглушка для нашей формы
-    //         index= 0,
-    //         apiData= {},
-    //         apiDataList= [],
-    //         listCCY= [],
-    //         inputValue= 0,
-    //         isLoading= false,
-    //         isError= false,
-    //         left= {
-    //             img= info('').img,
-    //             title= info('').title,
-    //             amount= '',
-    //             inputValue= '',
-    //             mainCurrency= '',
-    //             currency= '',
-    //         },
-    //         right= {
-    //             img= info('').img,
-    //             title= info('').title,
-    //             amount= '',
-    //             inputValue= '',
-    //             mainCurrency= '',
-    //             currency= '',
-    //         }
-    //     }
-
     useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
         fetch() // Метод для запроса данных с сервера
     }, []) // В прослуше пусто, следовательно метод не будет повторно выполнятся
@@ -245,7 +219,7 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
 
     const [exchange, dispathExchange] = useReducer( // Сам хук
         exchangeReducer, // Метод 
-        {} // Состояние, у нас внутри метода инициализируется
+        exchangeForm // Состояние
     )
 
 
