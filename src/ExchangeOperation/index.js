@@ -1,54 +1,64 @@
 import { useEffect, useReducer, useState } from 'react'
 import './style.css'
 
+// Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
 const ExchagneOperation = ({
-    callbackIsBuy
-}) => { // Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
+    onCallbackIsBuy = (isBuy) => { }
+}) => {
+    // Шаблон "стиль состояние кнопки"
 
-    const btnOperationStyle = { // Шаблон "стиль состояние кнопки"
-        active: { // Стиль активной кнопки
+    const btnOperationStyle = {
+        // Стиль активной кнопки
+        active: {
             backgroundColor: '#daeef9',
             color: '#222222',
             fontWeight: "900",
             cursor: 'default'
         },
-        disable: { // Стиль не активной кнопки
+        // Стиль не активной кнопки
+        disable: {
             backgroundColor: '#edf7fd',
             backgound: 'CADETBLUE',
             color: '#1819b3',
             textDecorationLine: 'underline',
         }
     }
-
-    const operationInitState = { // Шаблон инициализации 
+    // Шаблон инициализации 
+    const operationInitState = {
         isBuy: true,
         btnStyleBuy: {
             ...btnOperationStyle.active
         },
-        btnStyleSell: {
+        btnStyleSale: {
             ...btnOperationStyle.disable
         }
     }
 
-    const operationReducer = (state, action) => { // Метод редусера операций
-        switch (action.type) { // Распознаем нужный нам тип
-            case "BUY": // Нажатие на кнопку купить
-                return { // ВОзвражаем новое состояне
+    // Метод редусера операций
+    const operationReducer = (state, action) => {
+        // Распознаем нужный нам тип
+        switch (action.type) {
+            // Нажатие на кнопку купить
+            case "BUY":
+                // Вoзвражаем новое состояне
+                return {
                     isBuy: true,
                     btnStyleBuy: {
                         ...btnOperationStyle.active
                     },
-                    btnStyleSell: {
+                    btnStyleSale: {
                         ...btnOperationStyle.disable
                     }
                 }
-            case "SELL": // При нажатии кнопки продать 
-                return { // Возвращаем новое состояние
+            // При нажатии кнопки продать 
+            case "SALE":
+                // Возвращаем новое состояние
+                return {
                     isBuy: false,
                     btnStyleBuy: {
                         ...btnOperationStyle.disable
                     },
-                    btnStyleSell: {
+                    btnStyleSale: {
                         ...btnOperationStyle.active
                     }
                 }
@@ -56,32 +66,39 @@ const ExchagneOperation = ({
                 return state
         }
     }
-
-    const [operation, dispacherOperation] = useReducer( // Хук reducer
-        operationReducer, // Метод reducer
-        operationInitState // Начальное состояние
+    
+    // Хук reducer
+    const [operation, dispacherOperation] = useReducer(
+        // Метод reducer
+        operationReducer,
+        // Начальное состояние
+        operationInitState
     )
-
-    useEffect(() => { // При переключении "isBuy" вызываем callback родителя, передаем состояние isBuy
-        callbackIsBuy(operation.isBuy)
+    
+    // При переключении "isBuy" вызываем callback родителя, передаем состояние isBuy
+    useEffect(() => {
+        onCallbackIsBuy(operation.isBuy)
     }, [operation])
 
-    const handleButtonSell = (event) => { // Событие нажатия кнопки "продать"
+    // Событие нажатия кнопки "продать"
+    const handleButtonSale = (event) => {
         dispacherOperation({
-            type: "SELL"
+            type: "SALE"
         })
     }
 
-    const handleButtonBuy = (event) => { // Событие нажатия кнопки "купить"
+    // Событие нажатия кнопки "купить"
+    const handleButtonBuy = (event) => {
         dispacherOperation({
             type: "BUY"
         })
     }
 
-    return ( // Возвращаем компонент
+    // Возвращаем компонент
+    return ( 
         <div className='exchange-operation'>
             <button className='button-buy' style={{ ...operation.btnStyleBuy }} onClick={() => handleButtonBuy()}> Buy </button>
-            <button className='button-sell' style={{ ...operation.btnStyleSell }} onClick={() => handleButtonSell()}> Sell </button>
+            <button className='button-sale' style={{ ...operation.btnStyleSale }} onClick={() => handleButtonSale()}> Sale </button>
         </div>
     )
 }

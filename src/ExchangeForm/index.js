@@ -1,22 +1,25 @@
-import './style.css' //  Загружаем наши стили
+//  Загружаем наши стили
+import './style.css'
 
 import React from 'react'
+// Методы доп информации (локальные)
+import { info, getCCY } from '../assets/extendedCCY'
+// Вспомогательные методы (чтобы перенести часть операций в другой файл)
+import { roundUp, indexContains } from '../assets/util'
+// Компонент карточки
+import ExchangeItem from "../ExchangeItem"
+// Компонент выбора оберации
+import ExchagneOperation from '../ExchangeOperation'
+// Реакт хуки
+import { useEffect, useReducer, useState } from 'react'
+// Bootstrap css
+import 'bootstrap/dist/css/bootstrap.css';
+import { Spinner } from 'react-bootstrap'
+// Библиотека для работы с сервером
+import axios from 'axios'
 
-import { info, getCCY } from '../assets/extendedCCY' // Методы доп информации (локальные)
-import { roundUp, indexContains } from '../assets/util' // Вспомогательные методы (чтобы перенести часть операций в другой файл)
-
-import ExchangeItem from "../ExchangeItem" // Компонент карточки
-import ExchagneOperation from '../ExchangeOperation' // Компонент выбора оберации
-
-import { useEffect, useReducer, useState } from 'react' // Реакт хуки
-
-
-import 'bootstrap/dist/css/bootstrap.css'; // Bootstrap css
-import { Spinner } from 'react-bootstrap' // Bootstrap
-
-import axios from 'axios' // Библиотека для работы с сервером
-
-const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей формы
+// Инициализируем начальное значение 
+const ExchangeForm = ({ exchangeForm = {
     index: 0,
     apiData: {},
     apiDataList: [],
@@ -42,32 +45,47 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
     }
 } }) => {
 
-    useEffect(() => { // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
-        fetch() // Метод для запроса данных с сервера
-    }, []) // В прослуше пусто, следовательно метод не будет повторно выполнятся
+    // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
+    // Метод для запроса данных с сервера
+    // В прослуше пусто, следовательно метод не будет повторно выполнятся 
+    useEffect(() => {
 
-    const [isBuy, setIsBuy] = useState(true) //Хук состояния. Название поля глупое, но вполне сгодится, используем для инициализации состояния "Это покупка?" (покупка или не покупка)
+        fetch()
+    }, [])
+    //Хук состояния. Название поля глупое, но вполне сгодится, используем для инициализации состояния "Это покупка?" (покупка или не покупка)
+    const [isBuy, setIsBuy] = useState(true)
 
-    const handleIsBuy = (isBuyValue) => { // Калбек для получения состояния дочернего компонента
-        setIsBuy(isBuyValue) // Присваеваем состояние дочернего компонента родителю
+    // Калбек для получения состояния дочернего компонента
+    // Присваеваем состояние дочернего компонента родителю
+    const handleIsBuy = (isBuyValue) => {
+        setIsBuy(isBuyValue)
     }
 
-    useEffect(() => { // Хук для выполнения кода при изменениях в состоянию "Это покупка?"
-        dispathExchange({ // Выполняем запрос
-            type: 'CHANGE_RATE', //Тип запроса
+    // Хук для выполнения кода при изменениях в состоянию "Это покупка?"
+    // Выполняем запрос
+    // Тип запроса
+    useEffect(() => {
+        dispathExchange({
+            type: 'CHANGE_RATE',
         })
     }, [isBuy])
+    // Обработчик изменений в левой карточке
+    // Выполняем запрос
 
-    const handleLeftInput = (value) => { // Обработчик изменений в левой карточке
-        dispathExchange({ // Выполняем запрос
-            type: 'LEFT_CHANGE', // Тип запроса, у нас это изменения в левой карточке
-            payload: { // Передаем состояние 
-                inputValue: value // Значение поля ввода левой карточки
+    const handleLeftInput = (value) => {
+        dispathExchange({
+            // Тип запроса, у нас это изменения в левой карточке
+            type: 'LEFT_CHANGE',
+            // Передаем состояние  
+            payload: {
+                // Значение поля ввода левой карточки
+                inputValue: value
             }
         })
     }
 
-    const handleRightInput = (value) => { // Обработчик изминений в правой карточке
+    // Обработчик изминений в правой карточке
+    const handleRightInput = (value) => {
         dispathExchange({ // Выполняем запрос
             type: 'RIGHT_CHANGE', // Тип запроса
             payload: { // Передаем состояние
@@ -240,40 +258,40 @@ const ExchangeForm = ({ exchangeForm = { // Заглушка для нашей �
                     type: 'ERROR'
                 })
             })
-}
+    }
 
-if (exchange.isError) {
-    return (
-        <>
-            <h1>Something wrong...</h1>
-            <h2>Pleace check your internet connection =)</h2>
-        </>
-    )
-}
+    if (exchange.isError) {
+        return (
+            <>
+                <h1>Something wrong...</h1>
+                <h2>Pleace check your internet connection =)</h2>
+            </>
+        )
+    }
 
-if (exchange.isLoading) {
-    return (
-        <div className="exchange-form-loading">
-            <Spinner animation="border" variant="primary" />
+    if (exchange.isLoading) {
+        return (
+            <div className="exchange-form-loading">
+                <Spinner animation="border" variant="primary" />
+            </div>
+        )
+    }
+
+    return ( // Возвращаеи наш компонент (=
+        <div className='exchange-form'>
+            <div className='exchange-form-header'>
+                Currency converter
+            </div>
+            <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
+            <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
+                {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
+            </select>
+            <div className='exchange-form-container'>
+                <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
+                <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
+            </div>
         </div>
     )
-}
-
-return ( // Возвращаеи наш компонент (=
-    <div className='exchange-form'>
-        <div className='exchange-form-header'>
-            Currency converter
-        </div>
-        <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
-        <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-            {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
-        </select>
-        <div className='exchange-form-container'>
-            <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
-            <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
-        </div>
-    </div>
-)
 }
 
 export default ExchangeForm

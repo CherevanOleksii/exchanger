@@ -17,6 +17,7 @@
     "react-scripts": "4.0.3",
     "react-test-renderer": "^17.0.2",
     "sass": "^1.43.4",
+    "sinon": "^12.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -44,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.2",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.5",
     "regenerator-runtime": "^0.13.9"
   }

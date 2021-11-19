@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './style.css'
+import './style.scss'
 
 const ExchangeItem = ({ 
     img, 
@@ -42,7 +42,7 @@ const ExchangeItem = ({
                     <input className='exchange-item-input' value={localInputValue} onChange={handleInput}></input>
                     <div className="exchange-item-selected-currency">
                 {currency}
-            </div>
+            </div>  
                 </div>
             </div>
             
