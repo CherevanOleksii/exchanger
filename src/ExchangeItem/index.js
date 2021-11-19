@@ -9,7 +9,7 @@ const ExchangeItem = ({
     inputValue = '',
     mainCurrency = '',
     currency = '',
-    onHandleInput = null
+    onHandleInput
 }) => {
 
     // Хук состояние, храним значение ввода
@@ -30,7 +30,7 @@ const ExchangeItem = ({
         if (val === '' || re.test(val)) {
             // Присваеваем значение компонента
             setLocalInputValue(val);
-            // Передаем значение родителю
+        // Передаем значение родителю
             onHandleInput(val);
         }
     }

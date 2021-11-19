@@ -343,7 +343,7 @@ const ExchangeForm = ({ exchangeForm = {
             <div className='exchange-form-header'>
                 Currency converter
             </div>
-            <ExchagneOperation onCallbackIsBuy={handleIsBuy}> </ExchagneOperation>
+            <ExchagneOperation onHandleIsBuy={handleIsBuy}> </ExchagneOperation>
             <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
                 {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
             </select>
