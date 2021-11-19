@@ -304,7 +304,7 @@ const ExchangeForm = ({ exchangeForm = {
 
         })
         // Получения данных с сервера, использую AXIOS так как нраится
-        axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5')
+        axios.get('https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11')
             // Если есть ответ, то мы вызываем метод полусения нового состояния
             .then(res => dispathExchange({
                 type: 'FETCH',
@@ -343,13 +343,13 @@ const ExchangeForm = ({ exchangeForm = {
             <div className='exchange-form-header'>
                 Currency converter
             </div>
-            <ExchagneOperation callbackIsBuy={handleIsBuy}> </ExchagneOperation>
+            <ExchagneOperation onCallbackIsBuy={handleIsBuy}> </ExchagneOperation>
             <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
                 {exchange.listCCY ? exchange.listCCY.map(item => <option key={item}>{item}</option>) : <></>}
             </select>
             <div className='exchange-form-container'>
-                <ExchangeItem callbackInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
-                <ExchangeItem callbackInput={handleRightInput} {...exchange.right}></ExchangeItem>
+                <ExchangeItem onHandleInput={handleLeftInput} {...exchange.left} ></ExchangeItem>
+                <ExchangeItem onHandleInput={handleRightInput} {...exchange.right}></ExchangeItem>
             </div>
         </div>
     )
