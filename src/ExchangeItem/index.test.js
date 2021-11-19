@@ -3,44 +3,55 @@ import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 configure({ adapter: new Adapter() })
 
 import ExchangeItem from '.';
+import { wrap } from 'regenerator-runtime';
 
 describe(">>> Exchange item ", () => {
     let wrapper = null
-
+    let onHandleInput = null
+    let props = null
+    
     beforeEach(() => {
-        wrapper = shallow(<ExchangeItem></ExchangeItem>)
-    })
-
-
-    it('Component doesnt null', () => {
-        expect(wrapper).not.toBeNull()
-    })
-
-    it('Check component props', () => {
-        let onHandleInput = jest.fn((value) => {})
-        const props = {
+        onHandleInput = jest.fn((value) => {})
+        
+        props = {
             img : null,
             title : 'Ukraine',
             amount : '5',
             inputValue : '4',
             mainCurrency : 'UAH',
             currency : 'USD',
-            callbackInput : onHandleInput
+            onHandleInput: onHandleInput
         }
 
-        const wrapper = mount(<ExchangeItem {...props} />);
-        //Проверяем всё что передали, если 
+        wrapper = mount(<ExchangeItem {...props}></ExchangeItem>)
+    })
 
+
+    it('+++ Component doesnt null', () => {
+        expect(wrapper).not.toBeNull()
+    })
+
+    it('+++ Check component props', () => {
+        //Проверяем всё что передали 
         expect(wrapper.props()).toEqual(props);
         
         //Проверяем всё по отдельности
-        expect(wrapper.props().img).toBeNull
-        expect(wrapper.props().title).toEqual('Ukraine')
-        expect(wrapper.props().amount).toEqual('5')
-        expect(wrapper.props().inputValue).toEqual('4')
-        expect(wrapper.props().mainCurrency).toEqual('UAH')
-        expect(wrapper.props().currency).toEqual('USD')
-        expect(wrapper.props().callbackInput).toEqual(onHandleInput)
-        
+        expect(wrapper.prop('img')).toBeNull
+        expect(wrapper.prop('title')).toEqual('Ukraine')
+        expect(wrapper.prop('amount')).toEqual('5')
+        expect(wrapper.prop('inputValue')).toEqual('4')
+        expect(wrapper.prop('mainCurrency')).toEqual('UAH')
+        expect(wrapper.prop('currency')).toEqual('USD')
+        expect(wrapper.prop('onHandleInput')).toEqual(onHandleInput)
     })
+
+    it('+++ Check node items', () => {
+        expect(wrapper.find('img.image')).toHaveLength(1)
+        expect(wrapper.find('div.title')).toHaveLength(1)
+        expect(wrapper.find('div.exchange-item-description')).toHaveLength(1)
+        expect(wrapper.find('input.exchange-item-input')).toHaveLength(1)
+        expect(wrapper.find('div.exchange-item-selected-currency')).toHaveLength(1)      
+    })
+
+    
 })

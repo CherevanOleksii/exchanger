@@ -25,6 +25,8 @@ describe('>>> ExchangeOperation', () => {
 
     it('+++ Is it have two buttons', () => {
         wrapper = shallow(<ExchagneOperation />)
+        
+        expect(wrapper.find('button')).toHaveLength(2)
 
         expect(wrapper.find('button.button-buy')).not.toBeNull();
 
@@ -37,7 +39,7 @@ describe('>>> ExchangeOperation', () => {
             isBuy = value            
         })
         wrapper = mount(<ExchagneOperation onCallbackIsBuy={onCallbackIsBuy}/>)
-
+        
         expect(isBuy).toBe(true)
 
         wrapper.find('button.button-buy').simulate('click')

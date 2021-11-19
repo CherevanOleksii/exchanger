@@ -1,36 +1,41 @@
 import { useEffect, useState } from 'react';
 import './style.scss'
 
-const ExchangeItem = ({ 
-    img, 
-    title = '', 
-    amount = '1', 
-    inputValue = '', 
-    mainCurrency = '', 
-    currency = '', 
-    callbackInput = null 
-}) => { // Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
+// Передаем аргументы в параметры, деконструктор чтобы не использовать входящий параметр "props"
+const ExchangeItem = ({
+    img,
+    title = '',
+    amount = '1',
+    inputValue = '',
+    mainCurrency = '',
+    currency = '',
+    onHandleInput = null
+}) => {
 
-    const [localInputValue, setLocalInputValue] = useState(inputValue) // Хук состояние, храним значение ввода
-
-    useEffect(() => { // Если родитель меняет состояние, то мы обнавляем состояние компонента на состояние родителя
+    // Хук состояние, храним значение ввода
+    const [localInputValue, setLocalInputValue] = useState(inputValue)
+    // Если родитель меняет состояние, то мы обнавляем состояние компонента на состояние родителя
+    useEffect(() => {
         setLocalInputValue(inputValue)
     }, [inputValue])
 
 
-    const handleInput = (event) => {
+    const onInputChange = (event) => {
         const val = event.target.value;
-        // Если нужно задать ограничение на количество цивр после запятой 
+        // Ограничение на количество цифр после запятой 
         // const re =/^[0-9]+(?:[\.]|[\.][0-9]{1,4})?$/
-        const re =/^[0-9]+(?:[\.]|[\.][0-9]+)?$/ // Регулярное выражение для поиска числа, наш string должен быть СТРОГО ЧИСЛОМ!
+        const re = /^[0-9]+(?:[\.]|[\.][0-9]+)?$/ // Регулярное выражение для поиска числа, наш string должен содержать СТРОГО ЧИСЛО!
 
-        if (val === '' || re.test(val)) { // Проверяем подходит ли нам стоки, если да, то присваеваем новое состояние строки
-            setLocalInputValue(val); // Присваеваем значение компонента
-            callbackInput(val); // Передаем значение родителю
+        // Проверяем подходит ли нам строка, если да, то присваеваем новое состояние строки
+        if (val === '' || re.test(val)) {
+            // Присваеваем значение компонента
+            setLocalInputValue(val);
+            // Передаем значение родителю
+            onHandleInput(val);
         }
     }
-
-    return ( // Возвращаем компонент
+    // Возвращаем компонент
+    return (
         <div className='exchange-item'>
             <div className={'exchange-item-left'}>
                 <div className='exchange-item-top-container'>
@@ -39,13 +44,13 @@ const ExchangeItem = ({
                 </div>
                 <div className='exchange-item-description'>Rate: {amount} {mainCurrency}</div>
                 <div className='exchange-item-bot-container'>
-                    <input className='exchange-item-input' value={localInputValue} onChange={handleInput}></input>
+                    <input className='exchange-item-input' value={localInputValue} onChange={onInputChange}></input>
                     <div className="exchange-item-selected-currency">
-                {currency}
-            </div>  
+                        {currency}
+                    </div>
                 </div>
             </div>
-            
+
         </div>
     )
 }
