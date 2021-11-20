@@ -18,7 +18,7 @@ const staticAPI = [
 const App = ({
   isLoading = false,
   isError = false,
-  isOffline = true,
+  isOffline = false,
 
   apiData = staticAPI }) => {
 
