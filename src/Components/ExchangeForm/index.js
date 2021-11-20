@@ -3,71 +3,53 @@ import './style.css'
 
 import React from 'react'
 // Методы доп информации (локальные)
-import { info, getCCY } from '../assets/extendedCCY'
+import { info, getCCY } from '../../assets/extendedCCY'
 // Вспомогательные методы (чтобы перенести часть операций в другой файл)
-import { roundUp, indexContains } from '../assets/util'
+import { roundUp, indexContains } from '../../assets/util'
 // Компонент карточки
 import ExchangeItem from "../ExchangeItem"
 // Компонент выбора оберации
 import ExchagneOperation from '../ExchangeOperation'
 // Реакт хуки
 import { useEffect, useReducer, useState } from 'react'
-// Bootstrap css
-import 'bootstrap/dist/css/bootstrap.css';
-import { Spinner } from 'react-bootstrap'
 // Библиотека для работы с сервером
 import axios from 'axios'
 
 // Инициализируем начальное значение 
-const ExchangeForm = ({ isOffline = false }) => {
-    const staticAPI = [
-        {"ccy":"USD","base_ccy":"UAH","buy":"26.40000","sale":"26.66667"},
-        {"ccy":"EUR","base_ccy":"UAH","buy":"29.85000","sale":"30.30303"},
-        {"ccy":"RUR","base_ccy":"UAH","buy":"0.35000","sale":"0.38000"},
-        {"ccy":"BTC","base_ccy":"USD","buy":"54141.1403","sale":"59840.2077"}]
-    
-    const exchangeForm = {
-        index: 0,
-        // Работа в оффлайн режиме
-        apiDataList: [staticAPI[0]],
-        inputValue: 0,
-
-        isLoading: false,
-        isError: false,
-
-        left: {
-            img: '',
-            title: '',
-            amount: '',
-            inputValue: '',
-            mainCurrency: '',
-            currency: '',
-        },
-        right: {
-            img: '',
-            title: '',
-            amount: '',
-            inputValue: '',
-            mainCurrency: '',
-            currency: '',
+const ExchangeForm = ({ dataList = [] }) => {
+    const getListCCY = (list) => {
+        try {
+            return list.map(item => item.ccy)
+        } catch {
+            throw " You have trouble with list "
         }
-
     }
-    // Код исполняемый при запуске программы (в нашем случае для запроса данных) 
-    // Метод для запроса данных с сервера
-    // В прослуше пусто, следовательно метод не будет повторно выполнятся 
-    useEffect(() => {
-        if (isOffline)
-            dispathExchange({
-                type: 'FETCH',
-                payload: {
-                    apiDataList: exchangeForm.apiDataList,
-                    index: 0
-                }
-            })
-        else
-            fetch()
-    }, [])
+    // Работа в оффлайн режиме
+    const getInitialState = () => {
+        return {
+            index: 0,
+            apiDataList: dataList,
+            inputValue: 0,
+    
+            left: {
+                img: '',
+                title: '',
+                amount: '',
+                inputValue: '',
+                mainCurrency: '',
+                currency: '',
+            },
+            right: {
+                img: '',
+                title: '',
+                amount: '',
+                inputValue: '',
+                mainCurrency: '',
+                currency: '',
+            }
+    
+        }
+    }
 
     //Хук состояния. Название поля глупое, но вполне сгодится, используем для инициализации состояния "Это покупка?" (покупка или не покупка)
     const [isBuy, setIsBuy] = useState(true)
@@ -121,13 +103,12 @@ const ExchangeForm = ({ isOffline = false }) => {
         let name = event.target.value
 
         // С помощью метода получаем индекс в списке
-        const index = indexContains(exchange.apiDataList.map(item => item.ccy), name)
+        const index = indexContains(getListCCY(exchange.apiDataList), name)
 
         // Выполняем запрос
         dispathExchange({
             // Тип запроса
             type: "CHANGE_INDEX",
-
             // Передаем запроса
             payload: {
                 // Значение индекса
@@ -177,36 +158,7 @@ const ExchangeForm = ({ isOffline = false }) => {
 
         // Определяем тип запроса
         switch (action.type) {
-            // Запрос "инициализация" для инициализац
-            case "INIT": {
-                // Обновляем состояне
-                return {
-                    // ...state, // Возвразаем старое состояние
-                    // Инициализируем начальные значения
-                    ...exchangeForm,
-                    // Состояне приложения загрузка - нужно для того, чтобы показать окно загрузки 
-                    isLoading: true
-                }
-            }
-            // Запрос инициалиации 
-            case "FETCH": {
-                // Использую переменные (одна переменная заменяет длинную конструкцию + зрительно понятнее)
-                let dataList = action.payload.apiDataList
-                // С помощью деконструктора создаю переменные (без постоянного использования data.sale и тд)
-                let index = action.payload.index
-                // Задаем состояние обьекта
-                let data = dataList[index]
-                return {
-                    // Старое состояние 
-                    ...state,
-                    apiDataList: dataList,
-                    isLoading: false,
-                    // Левая карточка
-                    left: getLeftCardFromData(data, 1),
-                    // Все тоже как и в левой =)
-                    right: getRightCardFromData(data, roundUp(1 / (isBuy ? data.buy : data.sale))),
-                }
-            }
+            
             // Запрос смены типа покупка \ продажа
             case "CHANGE_RATE": {
                 if (state.apiDataList.length < 1)
@@ -215,7 +167,7 @@ const ExchangeForm = ({ isOffline = false }) => {
                 // Получаем цены 
                 let { buy, sale } = data
                 // Возвращаем новое состояние
-                let leftInputValue = state.left ? state.left.inputValue : '0'
+                let leftInputValue = state.left.inputValue ? state.left.inputValue : '1'
                 return {
                     // Старое состояние, чтобы не переписывать все сначала
                     ...state,
@@ -282,50 +234,8 @@ const ExchangeForm = ({ isOffline = false }) => {
         // Метод
         exchangeReducer,
         // Состояние
-        exchangeForm
+        getInitialState()
     )
-
-    // Получаем данные с сервера
-    const fetch = async () => {
-        // Запрос инициализации 
-        dispathExchange({
-            type: 'INIT'
-
-        })
-        // Получения данных с сервера, использую axios так как нраится
-        axios.get('https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11')
-            // Если есть ответ, то мы вызываем метод полусения нового состояния
-            .then(res => dispathExchange({
-                type: 'FETCH',
-                payload: {
-                    apiDataList: res.data,
-                    index: 0
-                }
-            }))
-            // Если сервер недоступен
-            .catch(() => {
-                dispathExchange({
-                    type: 'ERROR'
-                })
-            })
-    }
-
-    if (!exchange || exchange.isError) {
-        return (
-            <>
-                <h1>Something wrong...</h1>
-                <h2>Pleace check your internet connection =)</h2>
-            </>
-        )
-    }
-
-    if (exchange.isLoading) {
-        return (
-            <div className="exchange-form-loading">
-                <Spinner animation="border" variant="primary" />
-            </div>
-        )
-    }
 
     return ( // Возвращаеи наш компонент (=
         <div className='exchange-form'>
@@ -334,7 +244,7 @@ const ExchangeForm = ({ isOffline = false }) => {
             </div>
             <ExchagneOperation onCallbackIsBuy={handleIsBuy}> </ExchagneOperation>
             <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-                {exchange.apiDataList ? exchange.apiDataList.map(item => <option key={item.ccy}>{item.ccy}</option>) : <></>}
+                {exchange.apiDataList ? getListCCY(exchange.apiDataList).map(ccy => <option key={ccy}>{ccy}</option>) : <></>}
             </select>
             <div className='exchange-form-container'>
                 <ExchangeItem onHandleInput={handleLeftInput} {...exchange.left} ></ExchangeItem>

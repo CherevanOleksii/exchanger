@@ -4,6 +4,7 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
 configure({ adapter: new Adapter() })
 
 import ExchangeForm from '.'
+import { act } from '@testing-library/react'
 
 describe('>>> Exchange form', () => {
 
@@ -43,14 +44,18 @@ describe('>>> Exchange form', () => {
 
 
     beforeEach(() => {
-        wrapper = mount(<ExchangeForm exchangeForm={exchangeForm}></ExchangeForm>)
+        wrapper = mount(<ExchangeForm dataList={exchangeForm.apiDataList}></ExchangeForm>)
     })
 
     it('+++ Component exist', () => {
+        act(() => {
+            wrapper = mount(<ExchangeForm dataList={exchangeForm.apiDataList}></ExchangeForm>)
+        })
+        
         expect(wrapper).not.toBeNull()
     })
 
     it('+++ Check all components` properties ', () => {
-        <ExchangeForm></ExchangeForm>
+        
     })
 })
