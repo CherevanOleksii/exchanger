@@ -3,7 +3,7 @@ import './style.css'
 
 import React from 'react'
 // Методы доп информации (локальные)
-import { info, getCCY } from '../../assets/extendedCCY'
+import { info, getListCCY } from '../../assets/extendedCCY'
 // Вспомогательные методы (чтобы перенести часть операций в другой файл)
 import { roundUp, indexContains } from '../../assets/util'
 // Компонент карточки
@@ -17,25 +17,16 @@ import axios from 'axios'
 
 // Инициализируем начальное значение 
 const ExchangeForm = ({ dataList = [] }) => {
-    const getListCCY = (list) => {
-        try {
-            return list.map(item => item.ccy)
-        } catch {
-            throw " You have trouble with list "
-        }
-    }
     // Работа в оффлайн режиме
-    const getInitialState = () => {
+    const getInitialState = (inIndex = 0, leftInputValue = '') => {
         return {
-            index: 0,
             apiDataList: dataList,
-            inputValue: 0,
-    
+            index: inIndex,
             left: {
                 img: '',
                 title: '',
                 amount: '',
-                inputValue: '',
+                inputValue: leftInputValue,
                 mainCurrency: '',
                 currency: '',
             },
@@ -47,17 +38,19 @@ const ExchangeForm = ({ dataList = [] }) => {
                 mainCurrency: '',
                 currency: '',
             }
-    
+
         }
     }
 
+
     //Хук состояния. Название поля глупое, но вполне сгодится, используем для инициализации состояния "Это покупка?" (покупка или не покупка)
-    const [isBuy, setIsBuy] = useState(true)
+    const [isBuy, setIsBuy] = useState( true)
 
     // Калбек для получения состояния дочернего компонента
     // Присваеваем состояние дочернего компонента родителю
     const handleIsBuy = (isBuyValue) => {
         setIsBuy(isBuyValue)
+       
     }
 
     // Хук для выполнения кода при изменениях в состоянию "Это покупка?"
@@ -72,6 +65,7 @@ const ExchangeForm = ({ dataList = [] }) => {
     // Выполняем запрос
 
     const handleLeftInput = (value) => {
+        localStorage.setItem('leftInputValue', value)
         dispathExchange({
             // Тип запроса, у нас это изменения в левой карточке
             type: 'LEFT_CHANGE',
@@ -155,10 +149,8 @@ const ExchangeForm = ({ dataList = [] }) => {
 
     // Reducer? почему? Ибо нам нужно хранить состояние и использовать повидение
     const exchangeReducer = (state, action) => {
-
         // Определяем тип запроса
         switch (action.type) {
-            
             // Запрос смены типа покупка \ продажа
             case "CHANGE_RATE": {
                 if (state.apiDataList.length < 1)
@@ -180,6 +172,8 @@ const ExchangeForm = ({ dataList = [] }) => {
             case "CHANGE_INDEX": {
                 // Новый индекс
                 let index = action.payload.index
+                // "Side effect"
+                localStorage.setItem('index', index)
                 // Информация о новой валюте
                 let data = state.apiDataList[index]
                 // Берем поля новой валюты
@@ -234,8 +228,12 @@ const ExchangeForm = ({ dataList = [] }) => {
         // Метод
         exchangeReducer,
         // Состояние
-        getInitialState()
+        getInitialState(localStorage.getItem('index'), localStorage.getItem('leftInputValue'))
     )
+
+    useEffect(() => {
+        localStorage.setItem('leftInputValue', exchange.left.inputValue)
+    }, [exchange])
 
     return ( // Возвращаеи наш компонент (=
         <div className='exchange-form'>
@@ -243,8 +241,8 @@ const ExchangeForm = ({ dataList = [] }) => {
                 Currency converter
             </div>
             <ExchagneOperation onCallbackIsBuy={handleIsBuy}> </ExchagneOperation>
-            <select className={'exchange-form-type-ccy'} onChange={handleChangeSelect}>
-                {exchange.apiDataList ? getListCCY(exchange.apiDataList).map(ccy => <option key={ccy}>{ccy}</option>) : <></>}
+            <select className={'exchange-form-type-ccy'} defaultValue={getListCCY(exchange.apiDataList)[exchange.index]} onChange={handleChangeSelect}>
+                {exchange.apiDataList ? getListCCY(exchange.apiDataList).map(ccy => <option key={ccy} >{ccy}</option>) : <></>}
             </select>
             <div className='exchange-form-container'>
                 <ExchangeItem onHandleInput={handleLeftInput} {...exchange.left} ></ExchangeItem>

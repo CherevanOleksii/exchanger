@@ -15,43 +15,37 @@ const staticAPI = [
   { "ccy": "RUR", "base_ccy": "UAH", "buy": "0.35000", "sale": "0.38000" },
   { "ccy": "BTC", "base_ccy": "UAH", "buy": "2.1403", "sale": "3.2077" }]
 
-// const initExchangeAppState = {
-//   isLoading: false,
-//   isError: false,
-//   isOffline: true,
-
-//   apiData: staticAPI
-// }
-
-
 const App = ({
-  isLoading= false,
-  isError= false,
-  isOffline= false,
-  apiData= staticAPI
-}) => {
+  isLoading = false,
+  isError = false,
+  isOffline = false,
+  apiData = staticAPI }) => {
+
+  // Сбираем обьект "начальное сотсояние"
   const initExchangeAppState = {
     isLoading,
     isError,
     isOffline,
     apiData
   }
-
+  
+  // Если состояние "offline" неактивно, то запрашываем данные с сервера
+  // Использую ефект для вызова в начале
   useEffect(() => {
-    if (!initExchangeAppState.isOffline) 
-        fetch()
+    if (!initExchangeAppState.isOffline)
+      fetchExchangeData()
   }, [])
 
+  // 
   const exchangeAppReducer = (state, action) => {
     switch (action.type) {
       // Запрос "инициализация" нам нужно точно знать когда мы уже подгрузили данные
       case "INIT": {
         // Обновляем состояне
         return {
-          // Инициализируем начальные значения
+          // Инициализируем начальные значения:
           // Возвразаем старое состояние
-          ...state, 
-          // ...initExchangeAppState,
+          ...state,
           // Состояне приложения загрузка - нужно для того, чтобы показать окно загрузки 
           isLoading: true
         }
@@ -61,17 +55,25 @@ const App = ({
         // Использую переменные (одна переменная заменяет длинную конструкцию + зрительно понятнее)
         let dataList = action.payload.apiDataList
         // Задаем состояние обьекта
-        return { 
+        return {
           ...state,
           isLoading: false,
           apiData: dataList,
+        }
+      }
+      case "ERROR": {
+        // Запрос при ошибке
+        // У нас ошибка (при отсутствии связи с АПИ)
+        return {
+          ...state,
+          isError: true
         }
       }
     }
   }
 
   // Получаем данные с сервера
-  const fetch = async () => {
+  const fetchExchangeData = async () => {
     // Запрос инициализации 
     dispatchExchangeApp({
       type: 'INIT'
@@ -85,7 +87,7 @@ const App = ({
           apiDataList: res.data,
         }
       }))
-      
+
       // Если сервер недоступен
       .catch(() => {
         dispatchExchangeApp({
@@ -103,7 +105,7 @@ const App = ({
     return (
       <>
         <h1>Something wrong...</h1>
-        <h2>Pleace check your internet connection =)</h2>
+        <h2>It can happen when you don`t have internet connection</h2>
       </>
     )
   }

@@ -59,8 +59,12 @@ const info = (ccy) => {
     }
 }
 
-const getCCY = (data = []) => {
-    return data.map(item => item.ccy)
+const getListCCY = (list) => {
+    try {
+        return list.map(item => item.ccy)
+    } catch {
+        throw " You have trouble with list "
+    }
 }
 
-export { info, getCCY }
+export { info, getListCCY }

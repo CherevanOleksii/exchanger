@@ -6,7 +6,6 @@ const ExchagneOperation = ({
     onCallbackIsBuy = (isBuy) => { }
 }) => {
     // Шаблон "стиль состояние кнопки"
-
     const btnOperationStyle = {
         // Стиль активной кнопки
         active: {
@@ -23,18 +22,27 @@ const ExchagneOperation = ({
             textDecorationLine: 'underline',
         }
     }
+    // Side effect 
+    let valueToSelect = (localStorage.getItem('isBuy') === 'sale')
     // Шаблон инициализации 
-    const operationInitState = {
-        isBuy: true,
-        btnStyleBuy: {
-            ...btnOperationStyle.active
-        },
-        btnStyleSale: {
-            ...btnOperationStyle.disable
+    const operationInitState = (!valueToSelect) 
+        ? {
+            isBuy: true,
+            btnStyleBuy: {
+                ...btnOperationStyle.active
+            },
+            btnStyleSale: {
+                ...btnOperationStyle.disable
+            }
+        } : {
+            isBuy: false,
+            btnStyleBuy: {
+                ...btnOperationStyle.disable
+            },
+            btnStyleSale: {
+                ...btnOperationStyle.active
+            }
         }
-    }
-
-    // Метод редусера операций
     const operationReducer = (state, action) => {
         // Распознаем нужный нам тип
         switch (action.type) {
@@ -66,7 +74,7 @@ const ExchagneOperation = ({
                 return state
         }
     }
-    
+
     // Хук reducer
     const [operation, dispacherOperation] = useReducer(
         // Метод reducer
@@ -74,10 +82,11 @@ const ExchagneOperation = ({
         // Начальное состояние
         operationInitState
     )
-    
+
     // При переключении "isBuy" вызываем callback родителя, передаем состояние isBuy
     useEffect(() => {
         onCallbackIsBuy(operation.isBuy)
+        localStorage.setItem('isBuy', operation.isBuy ? 'buy' : 'sale')
     }, [operation])
 
     // Событие нажатия кнопки "продать"
@@ -95,7 +104,7 @@ const ExchagneOperation = ({
     }
 
     // Возвращаем компонент
-    return ( 
+    return (
         <div className='exchange-operation'>
             <button className='button-buy' style={{ ...operation.btnStyleBuy }} onClick={() => handleButtonBuy()}> Buy </button>
             <button className='button-sale' style={{ ...operation.btnStyleSale }} onClick={() => handleButtonSale()}> Sale </button>
