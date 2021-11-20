@@ -19,7 +19,8 @@ import axios from 'axios'
 const ExchangeForm = ({ dataList = [] }) => {
     // Работа в оффлайн режиме
     const getInitialState = (inIndex = 0, leftInputValue = '') => {
-        return {
+        
+        let item =  {
             apiDataList: dataList,
             index: inIndex,
             left: {
@@ -40,6 +41,9 @@ const ExchangeForm = ({ dataList = [] }) => {
             }
 
         }
+
+        console.log(item)
+        return item
     }
 
 
@@ -155,7 +159,10 @@ const ExchangeForm = ({ dataList = [] }) => {
             case "CHANGE_RATE": {
                 if (state.apiDataList.length < 1)
                     return
+                console.log(state.apiDataList)
+                console.log(state.index)
                 let data = state.apiDataList[state.index]
+
                 // Получаем цены 
                 let { buy, sale } = data
                 // Возвращаем новое состояние
@@ -228,7 +235,8 @@ const ExchangeForm = ({ dataList = [] }) => {
         // Метод
         exchangeReducer,
         // Состояние
-        getInitialState(localStorage.getItem('index'), localStorage.getItem('leftInputValue'))
+        getInitialState(localStorage.getItem('index') || 0, localStorage.getItem('leftInputValue') || 1)
+        
     )
 
     useEffect(() => {

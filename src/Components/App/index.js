@@ -18,7 +18,8 @@ const staticAPI = [
 const App = ({
   isLoading = false,
   isError = false,
-  isOffline = false,
+  isOffline = true,
+
   apiData = staticAPI }) => {
 
   // Сбираем обьект "начальное сотсояние"
