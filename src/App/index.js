@@ -4,13 +4,9 @@ import Main from "components/04-pages/Main";
 import { fetchPrivatAPI } from "store/currencySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import Preloader from "components/00-atoms/04-preloader/Preloader";
 
 const App = () => {
-
-        // const res = await fetch("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11")
-        //     .then((res) => res.json())
-        //     .then((data) => data);
-            
     const dispatcher = useDispatch();
     const { status } = useSelector((store) => store.currency);
 
@@ -30,8 +26,7 @@ const App = () => {
     if (status === "pending") {
         return (
             <div className="exchange-form-loading">
-                {/* <Spinner animation="border" variant="primary" /> */}
-                <h2>Loading</h2>
+              <Preloader/>
             </div>
         );
     }

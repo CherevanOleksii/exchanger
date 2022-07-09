@@ -2,7 +2,7 @@
     "name": "notepad",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://oleksiicherevan.github.io/exchanger",
+    "homepage": "https://oleksiicherevan.github.io/exchanger/",
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
         "@testing-library/jest-dom": "^5.11.4",
