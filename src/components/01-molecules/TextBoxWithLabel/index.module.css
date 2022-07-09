@@ -1,0 +1,9 @@
+.text-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.text-box >:first-child {
+    padding-left: 20px;
+}

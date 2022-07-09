@@ -1,0 +1,27 @@
+.header {
+    height: 90px;
+    padding: 10px 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: #0c1842;
+    color: white;
+}
+
+.prices {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.help {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 19px;
+    display: flex;
+    justify-content: flex-end;
+}

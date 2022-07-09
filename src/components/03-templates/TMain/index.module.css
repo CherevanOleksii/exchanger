@@ -1,0 +1,16 @@
+.block {
+    background-color: #071033;
+    color: white;
+
+    min-width: 208px;
+}
+
+.content {
+    flex: 1;
+    margin-top: 50px;
+    width: 100%;
+    height: calc(100vh - 140px);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
