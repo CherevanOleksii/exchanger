@@ -3,64 +3,8 @@ import SelectOperation from "components/01-molecules/SelectOperation";
 import ExchangeCard from "components/02-organisms/01-cards/ExchangeCard";
 import React from "react";
 import { useState } from "react";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import styles from "./index.module.css";
-
-const necessaryCCY = ["UAH", "USD", "EUR"];
-
-const getNecesseryCurrencies = (currencies) => {
-    // purpose of this method is make a valid API for our application from PrivatAPI
-    // this is necessary because PrivatApi haven`t enough information and returns only basic.
-    const correctCurrencies = currencies.filter((currency) => {
-        const isCorrectCCY = necessaryCCY.filter(
-            (ccy) => ccy === currency.ccy
-        ).length;
-
-        const isCorrectBaseCCY = necessaryCCY.filter(
-            (ccy) => ccy === currency.base_ccy
-        ).length;
-
-        const isAllCorrect = !!isCorrectCCY && !!isCorrectBaseCCY;
-
-        if (isAllCorrect) {
-            return currency;
-        }
-    });
-
-    const usdToUahCurrency = currencies.filter(
-        (currency) => currency.ccy === "USD" && currency.base_ccy === "UAH"
-    )[0];
-    const eurToUahCurrency = currencies.filter(
-        (currency) => currency.ccy === "EUR" && currency.base_ccy === "UAH"
-    )[0];
-
-    const euroToDollar = {
-        ccy: "USD",
-        base_ccy: "EUR",
-        buy: usdToUahCurrency.buy / eurToUahCurrency.buy,
-        sale: usdToUahCurrency.sale / eurToUahCurrency.sale,
-    };
-
-    correctCurrencies.push(euroToDollar);
-
-    return correctCurrencies;
-};
-
-const getReverseExchange = (currencies) => {
-    const necessaryCurrencies = getNecesseryCurrencies(currencies);
-
-    const baseReverseCurrencies = necessaryCurrencies.map((currency) => {
-        const reverseCurrency = {};
-        reverseCurrency.ccy = currency.base_ccy;
-        reverseCurrency.base_ccy = currency.ccy;
-        reverseCurrency.buy = 1 / currency.buy;
-        reverseCurrency.sale = 1 / currency.sale;
-        return reverseCurrency;
-    });
-
-    const fullCurrencies = [...necessaryCurrencies, ...baseReverseCurrencies];
-    return fullCurrencies;
-};
 
 const getUniqueElements = (currencies, mapFunc) => {
     return currencies.map(mapFunc).filter((value, index, self) => {
@@ -68,12 +12,32 @@ const getUniqueElements = (currencies, mapFunc) => {
     });
 };
 
-const getCorrectCurrency = (currencies, ccy, base_ccy) =>
-    currencies.find((currency) =>
-        ccy === base_ccy
-            ? currency.ccy === ccy
-            : currency.ccy === ccy && currency.base_ccy === base_ccy
+const getReverseCurrency = (currencies, ccy, base_ccy) => {
+    let foundCurrency = currencies.filter(
+        (_currency) => _currency.ccy === base_ccy && _currency.base_ccy === ccy
     );
+
+    return foundCurrency[0];
+};
+
+const getCorrectCurrency = (currencies, oldCurrency, newCurrency) => {
+    const { ccy, base_ccy } = newCurrency;
+    const { ccy: old_ccy, base_ccy: old_base_ccy } = oldCurrency;
+
+    let correctCurrency;
+
+    if (ccy === base_ccy) {
+        correctCurrency = getReverseCurrency(currencies, old_ccy, old_base_ccy);
+    }
+
+    if (!correctCurrency) {
+        correctCurrency = currencies.filter(
+            (currency) => currency.ccy === ccy && currency.base_ccy === base_ccy
+        )[0];
+    }
+
+    return correctCurrency;
+};
 
 const CURRENCIES = [
     { ccy: "USD", base_ccy: "UAH", buy: "35.50000", sale: "35.90000" },
@@ -84,10 +48,12 @@ const CURRENCIES = [
 const Exchanger = (props) => {
     const { children } = props;
 
-    const currencies = getReverseExchange(CURRENCIES);
+    const { currencies } = useSelector((state) =>  { 
+        console.log(state);
+        return state.currency });
 
     const [isBuy, setIsBuy] = useState(true);
-    const [selectedCurrency, setSelectedCurrency] = useState(currencies[0]);
+    const [selectedCurrency, setSelectedCurrency] = useState(currencies.length ? currencies[0] : {});
 
     const [amountLeft, setAmountLeft] = useState(0);
     const [amountRight, setAmountRight] = useState(0);
@@ -114,18 +80,33 @@ const Exchanger = (props) => {
         const ccy = selected;
         const base_ccy = selectedCurrency.base_ccy;
 
-        const correctCurrency = getCorrectCurrency(currencies, ccy, base_ccy);
+        let correctCurrency = getCorrectCurrency(currencies, selectedCurrency, {
+            ccy,
+            base_ccy,
+        });
 
-        setSelectedCurrency(correctCurrency || selectedCurrency);
+        setSelectedCurrency(correctCurrency);
+
+        let newAmountRight = calcAmountRight(amountLeft, correctCurrency);
+        newAmountRight = roundUp(newAmountRight);
+        setAmountRight(newAmountRight);
     };
 
     const handleSelectedBaseCCY = (selected) => {
         const base_ccy = selected;
         const ccy = selectedCurrency.ccy;
 
-        const correctCurrency = getCorrectCurrency(currencies, ccy, base_ccy);
+        let correctCurrency =
+            getCorrectCurrency(currencies, selectedCurrency, {
+                ccy,
+                base_ccy,
+            }) || selectedCurrency;
 
-        setSelectedCurrency(correctCurrency || selectedCurrency);
+        setSelectedCurrency(correctCurrency);
+
+        let newAmountRight = calcAmountLeft(amountRight, correctCurrency);
+        newAmountRight = roundUp(newAmountRight);
+        setAmountLeft(newAmountRight);
     };
 
     const handleAmountChangeLeft = (amount) => {
@@ -142,11 +123,6 @@ const Exchanger = (props) => {
         setAmountRight(amount);
     };
 
-    useEffect(() => {
-        let newAmountRight = calcAmountRight();
-        newAmountRight = roundUp(newAmountRight);
-        setAmountRight(newAmountRight);
-    }, [selectedCurrency]);
     return (
         <div className={styles["section"]}>
             <SelectOperation onChange={hadleBuySaleChange}></SelectOperation>

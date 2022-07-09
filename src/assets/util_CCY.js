@@ -4,67 +4,31 @@ import usaFlag from './img/USA.png'
 import russianFlag from './img/russian.png'
 import bitcoinFlag from './img/bitcoin.jpeg'
 
-const extendedCCYList = {
+const imageFromCCY = {
     UAH: {
-        img: ukrainianFlag,
+        image: ukrainianFlag,
         title: 'Ukriane'
     },
 
     USD: {
-        img: usaFlag,
+        image: usaFlag,
         title: 'United States'
     },
 
     RUR: {
-        img: russianFlag,
+        image: russianFlag,
         title: 'Russian Federation'
     },
 
     EUR: {
-        img: europeFlag,
+        image: europeFlag,
         title: 'Europe Nation'
     },
 
     BTC: {
-        img: bitcoinFlag,
+        image: bitcoinFlag,
         title: 'Bitcoin'
     },
 
 }
-
-const getInfoFromCCY = (ccy) => {
-    switch (ccy) {
-        case 'UAH':
-            return {
-                ...extendedCCYList.UAH
-            }
-        case 'USD':
-            return {
-                ...extendedCCYList.USD
-            }
-        case 'EUR':
-            return {
-                ...extendedCCYList.EUR
-            }
-        case 'RUR':
-            return {
-                ...extendedCCYList.RUR
-            }
-        case 'BTC':
-            return {
-                ...extendedCCYList.BTC
-            }
-        default:
-            return ''
-    }
-}
-
-const getListCCY = (list) => {
-    try {
-        return list.map(item => item.ccy)
-    } catch {
-        throw " You have trouble with list "
-    }
-}
-
-export { getInfoFromCCY, getListCCY }
+export { imageFromCCY as ImageFromCCY }

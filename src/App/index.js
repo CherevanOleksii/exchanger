@@ -1,86 +1,24 @@
 import "./style.css";
 
-import axios from "axios";
-import { useEffect, useReducer, useRef, useState } from "react";
-
-import ExchangeForm from "components/ExchangeForm";
-import { staticAPI } from "assets/mock_data";
 import Main from "components/04-pages/Main";
+import { fetchPrivatAPI } from "store/currencySlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
-const App = ({
-    isLoading = false,
-    isError = false,
-    isOffline = false,
+const App = () => {
 
-    apiData = staticAPI,
-}) => {
-    const initExchangeAppState = {
-        isLoading,
-        isError,
-        isOffline,
-        apiData,
-    };
+        // const res = await fetch("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11")
+        //     .then((res) => res.json())
+        //     .then((data) => data);
+            
+    const dispatcher = useDispatch();
+    const { status } = useSelector((store) => store.currency);
 
     useEffect(() => {
-        if (!initExchangeAppState.isOffline) fetchExchangeData();
+        dispatcher(fetchPrivatAPI());
     }, []);
 
-    const exchangeAppReducer = (state, action) => {
-        switch (action.type) {
-            case "INIT": {
-                return {
-                    ...state,
-                    isLoading: true,
-                };
-            }
-
-            case "FETCH": {
-                let dataList = action.payload.apiDataList;
-                return {
-                    ...state,
-                    isLoading: false,
-                    apiData: dataList,
-                };
-            }
-            case "ERROR": {
-                return {
-                    ...state,
-                    isError: true,
-                };
-            }
-        }
-    };
-
-    const fetchExchangeData = async () => {
-        dispatchExchangeApp({
-            type: "INIT",
-        });
-
-        axios
-            .get(
-                "https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11"
-            )
-            .then((res) =>
-                dispatchExchangeApp({
-                    type: "FETCH",
-                    payload: {
-                        apiDataList: res.data,
-                    },
-                })
-            )
-            .catch(() => {
-                dispatchExchangeApp({
-                    type: "ERROR",
-                });
-            });
-    };
-
-    const [exchangeApp, dispatchExchangeApp] = useReducer(
-        exchangeAppReducer,
-        initExchangeAppState
-    );
-
-    if (exchangeApp.isError) {
+    if (status === "rejected") {
         return (
             <>
                 <h1>Something wrong...</h1>
@@ -89,10 +27,11 @@ const App = ({
         );
     }
 
-    if (exchangeApp.isLoading) {
+    if (status === "pending") {
         return (
             <div className="exchange-form-loading">
                 {/* <Spinner animation="border" variant="primary" /> */}
+                <h2>Loading</h2>
             </div>
         );
     }
@@ -100,7 +39,6 @@ const App = ({
     return (
         <div className="App">
             <Main></Main>
-            <ExchangeForm dataList={exchangeApp.apiData}></ExchangeForm>
         </div>
     );
 };
