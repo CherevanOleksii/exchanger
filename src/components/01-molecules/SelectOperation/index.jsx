@@ -18,19 +18,18 @@ const SelectOperation = (props) => {
     const { children, onChange } = props;
 
     const [isSell, setIsSell] = useState(false);
-    const [state, setState] = useState(stateBuy)
-
+    const [state, setState] = useState(stateBuy);
 
     const handleChange = (e) => {
-        const newIsSell = !isSell
-        
-        setIsSell(newIsSell)
-        setState(newIsSell ? stateSell : stateBuy)
+        const newIsSell = !isSell;
+
+        setIsSell(newIsSell);
+        setState(newIsSell ? stateSell : stateBuy);
     };
 
     useEffect(() => {
         onChange(isSell);
-    }, [isSell])
+    }, [isSell]);
 
     return (
         <div className={styles["select-operation"]}>

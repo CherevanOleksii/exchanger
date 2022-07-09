@@ -8,23 +8,28 @@ import { useRef } from "react";
 import { useEffect } from "react";
 
 const SelectCurrency = (props) => {
-    const { children, currencies = [], value ="", onChange = () => {} } = props;
+    const {
+        children,
+        currencies = [],
+        value = "",
+        onChange = () => {},
+    } = props;
 
     const handleChange = (event) => {
         const option = findOption(currencies, event);
         onChange(option.text);
     };
 
-
-    useEffect(() => {
-    }, [])
+    useEffect(() => {}, []);
     return (
         <select
             className={styles["select-operation"]}
             onChange={(e) => handleChange(e)}
         >
             {currencies.map((currency) => (
-                <option key={currency} selected={value === currency}>{currency}</option>
+                <option key={currency} selected={value === currency}>
+                    {currency}
+                </option>
             ))}
         </select>
     );
