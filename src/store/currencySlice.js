@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios"
+import axios from "axios";
 
 const necessaryCCY = ["UAH", "USD", "EUR"];
 
@@ -59,9 +59,7 @@ const getReverseExchange = (currencies) => {
 
 const fetchPrivatAPI = createAsyncThunk(
     "currency/fetchPrivatAPI",
-    async function (
-        URL = "https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11"
-    ) {
+    async function () {
         const response = await axios(
             "https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11"
         ).then((res) => res);

@@ -1,34 +1,33 @@
-import ukrainianFlag from './img/ukraine.png'
-import europeFlag from './img/europe.png'
-import usaFlag from './img/USA.png'
-import russianFlag from './img/russian.png'
-import bitcoinFlag from './img/bitcoin.jpeg'
+import ukrainianFlag from "./img/ukraine.png";
+import europeFlag from "./img/europe.png";
+import usaFlag from "./img/USA.png";
+import russianFlag from "./img/russian.png";
+import bitcoinFlag from "./img/bitcoin.jpeg";
 
 const imageFromCCY = {
     UAH: {
         image: ukrainianFlag,
-        title: 'Ukriane'
+        title: "Ukriane",
     },
 
     USD: {
         image: usaFlag,
-        title: 'United States'
+        title: "United States",
     },
 
     RUR: {
         image: russianFlag,
-        title: 'Russian Federation'
+        title: "Russian Federation",
     },
 
     EUR: {
         image: europeFlag,
-        title: 'Europe Nation'
+        title: "Europe Nation",
     },
 
     BTC: {
         image: bitcoinFlag,
-        title: 'Bitcoin'
+        title: "Bitcoin",
     },
-
-}
-export { imageFromCCY as ImageFromCCY }
+};
+export { imageFromCCY as ImageFromCCY };

@@ -4,20 +4,26 @@ import { useState } from "react";
 import styles from "./index.module.css";
 
 const TextBox = (props) => {
-    const { children, type = "text", text="text", value="", placeholder="0", onChange, onBlur } = props;
+    const {
+        children,
+        type = "text",
+        text = "text",
+        value = "",
+        placeholder = "0",
+        onChange,
+        onBlur,
+    } = props;
 
     const [innerText, setInnerText] = useState(value ?? "");
-    
+
     const handleChange = (e) => {
         const text = e.target.value;
-        
+
         setInnerText(text);
         onChange(text);
     };
 
-    useEffect(() => {
-        
-    }, [])
+    useEffect(() => {}, []);
 
     return (
         <div className={styles["text-box"]}>

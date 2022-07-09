@@ -48,12 +48,15 @@ const CURRENCIES = [
 const Exchanger = (props) => {
     const { children } = props;
 
-    const { currencies } = useSelector((state) =>  { 
+    const { currencies } = useSelector((state) => {
         console.log(state);
-        return state.currency });
+        return state.currency;
+    });
 
     const [isBuy, setIsBuy] = useState(true);
-    const [selectedCurrency, setSelectedCurrency] = useState(currencies.length ? currencies[0] : {});
+    const [selectedCurrency, setSelectedCurrency] = useState(
+        currencies.length ? currencies[0] : {}
+    );
 
     const [amountLeft, setAmountLeft] = useState(0);
     const [amountRight, setAmountRight] = useState(0);
