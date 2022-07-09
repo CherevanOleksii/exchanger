@@ -1,0 +1,11 @@
+.label {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.label span:first-child {
+    padding-right: 10px;
+}

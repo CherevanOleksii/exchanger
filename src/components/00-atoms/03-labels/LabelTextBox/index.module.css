@@ -1,0 +1,12 @@
+.label {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 32px;
+    /* identical to box height, or 267% */
+    
+    
+    color: rgba(153, 166, 175, 0.5);
+}
+

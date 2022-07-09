@@ -4,7 +4,7 @@ import usaFlag from './img/USA.png'
 import russianFlag from './img/russian.png'
 import bitcoinFlag from './img/bitcoin.jpeg'
 
-const extendedCCY = {
+const extendedCCYList = {
     UAH: {
         img: ukrainianFlag,
         title: 'Ukriane'
@@ -32,27 +32,27 @@ const extendedCCY = {
 
 }
 
-const info = (ccy) => {
+const getInfoFromCCY = (ccy) => {
     switch (ccy) {
         case 'UAH':
             return {
-                ...extendedCCY.UAH
+                ...extendedCCYList.UAH
             }
         case 'USD':
             return {
-                ...extendedCCY.USD
+                ...extendedCCYList.USD
             }
         case 'EUR':
             return {
-                ...extendedCCY.EUR
+                ...extendedCCYList.EUR
             }
         case 'RUR':
             return {
-                ...extendedCCY.RUR
+                ...extendedCCYList.RUR
             }
         case 'BTC':
             return {
-                ...extendedCCY.BTC
+                ...extendedCCYList.BTC
             }
         default:
             return ''
@@ -67,4 +67,4 @@ const getListCCY = (list) => {
     }
 }
 
-export { info, getListCCY }
+export { getInfoFromCCY, getListCCY }

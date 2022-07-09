@@ -1,0 +1,19 @@
+.select-operation {
+    height: 40px;
+    width: 50%;
+    border-radius: 5px;
+
+    background: rgba(69, 152, 211, 0.3);
+    padding: 10px 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+
+    color: inherit;
+}
+
+.select-operation >span >span {
+    font-size: 14px;
+}

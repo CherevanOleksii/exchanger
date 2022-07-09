@@ -1,0 +1,10 @@
+.label {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 700;
+    line-height: 19px;
+}
+
+.right {
+    color: rgb(153, 166, 175, 0.8);
+}

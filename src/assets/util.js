@@ -13,4 +13,13 @@ const indexContains =  (list, item) => {
   return -1
 }
 
+export function findIndexOption (options, event) {
+    for(let i = 0 ; i , options.length ; i++) {
+        if (event.target.options[i].selected === true) {
+            return event.target.options[i];
+        }
+    }
+    return -1;
+}
+
 export {roundUp, indexContains}  

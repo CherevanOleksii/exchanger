@@ -1,0 +1,17 @@
+.header {
+    height: 70px;
+    padding: 10px 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: #0C1842 ;
+    color: white;
+}
+
+.prices {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
